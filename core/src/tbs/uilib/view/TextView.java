@@ -1,8 +1,8 @@
 package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import tbs.uilib.Drawable;
 import tbs.uilib.HUDManager;
 import tbs.uilib.Screen;
@@ -69,11 +69,6 @@ public class TextView extends View {
         this.maxNumLines = maxNumLines;
     }
 
-    @Override
-    public void draw() {
-        drawRelative(0, 0);
-    }
-
     public void setTextScale(float textScale) {
         this.textScale = textScale;
     }
@@ -83,37 +78,38 @@ public class TextView extends View {
         getTextStrings();
     }
 
+    @Override
+    public void drag(int startX, int startY, int x, int y) {
+
+    }
+
     public void getTextStrings() {
         if (text == null || text.length() < 1)
             return;
-        Screen.font.setScale(textScale);
-        final BitmapFont.TextBounds bounds = Screen.font.getBounds(text);
-
-        int numLines = (int) Math.ceil(bounds.width / (w));
-        numLines = numLines > 25 ? 25 : numLines;
-
-        final int numLettersInOneLine = (int) Math.ceil(text.length() / numLines);
-        textHeight = bounds.height;
-        h = Math.round((textHeight * numLines) + (padding * (numLines + 1)));
-        startingPoint = (y + h - padding) - (textHeight / 2);
-        textStrings = new String[numLines];
-        for (int i = 0; i < numLines; i++) {
-            String out = "";
-            if (!(numLines - 1 == i)) {
-                int index = i * numLettersInOneLine;
-                if (!(index + numLettersInOneLine > text.length()))
-                    out = text.substring(index, index + numLettersInOneLine);
-            } else {
-                out = text.substring(i * numLettersInOneLine, text.length());
-            }
-            textStrings[i] = out;
-        }
+// Todo       Screen.font.setScale(textScale);
+//        final BitmapFont.TextBounds bounds = Screen.font.getBounds(text);
+//
+//        int numLines = (int) Math.ceil(bounds.width / (w));
+//        numLines = numLines > 25 ? 25 : numLines;
+//
+//        final int numLettersInOneLine = (int) Math.ceil(text.length() / numLines);
+//        textHeight = bounds.height;
+//        h = Math.round((textHeight * numLines) + (padding * (numLines + 1)));
+//        startingPoint = (y + h - padding) - (textHeight / 2);
+//        textStrings = new String[numLines];
+//        for (int i = 0; i < numLines; i++) {
+//            String out = "";
+//            if (!(numLines - 1 == i)) {
+//                int index = i * numLettersInOneLine;
+//                if (!(index + numLettersInOneLine > text.length()))
+//                    out = text.substring(index, index + numLettersInOneLine);
+//            } else {
+//                out = text.substring(i * numLettersInOneLine, text.length());
+//            }
+//            textStrings[i] = out;
+//        }
     }
 
-    @Override
-    public void handleFling(int x, int y, float velocityX, float velocityY) {
-
-    }
 
     protected void drawText(SpriteBatch batch, int relX, int relY) {
         for (int i = 0; i < textStrings.length; i++) {
@@ -136,14 +132,14 @@ public class TextView extends View {
     }
 
     @Override
-    public void drawRelative(float relX, float relY) {
+    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
         lastRelX = relX;
         lastRelY = relY;
         if (!HUDManager.camera.isInFrustum(relX + x, relY + y, w, h))
             return;
         for (Drawable drawable : drawables) {
             if (w > 0 && h > 0) {
-                drawable.draw();
+                drawable.draw(batch, renderer, relX, relY);
             }
         }
 
@@ -168,13 +164,6 @@ public class TextView extends View {
     @Override
     public void dispose() {
         textStrings = null;
-    }
-
-
-    @Override
-    public void drawBackground() {
-        //TODO
-        background.drawRelative(x, y, w, h);
     }
 
 

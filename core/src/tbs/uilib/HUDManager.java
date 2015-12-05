@@ -15,19 +15,21 @@ import java.util.ArrayList;
  */
 public class HUDManager implements InteractiveObject, Viewable {
     public static HUDCamera camera;
-    private static ArrayList<View> views = new ArrayList<View>();
+    public static HUDManager hudManager = new HUDManager();
     public static boolean continueCheckingClicks;
+    private static ArrayList<View> views = new ArrayList<View>();
 
-    public HUDManager() {
-        camera = new HUDCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
-        camera.position.x = camera.viewportWidth / 2;
-        camera.position.y = camera.viewportHeight / 2;
-        camera.update();
+    private HUDManager() {
+        if (hudManager == null) {
+            camera = new HUDCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            camera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
+            camera.position.x = camera.viewportWidth / 2;
+            camera.position.y = camera.viewportHeight / 2;
+            camera.update();
+        }
     }
 
     public static void addView(View view) {
-
         if (!views.contains(view))
             views.add(view);
     }
@@ -62,42 +64,41 @@ public class HUDManager implements InteractiveObject, Viewable {
         System.out.println(str);
     }
 
-
-    @Override
-    public void(UniversalClickListener.TouchType touchType, int x, int y) {
-        switch (touchType) {
-            case CLICK:
-                for (int i = (views.size() - 1); i >= 0; i--) {
-                    if (!continueCheckingClicks)
-                        return;
-
-                    final View view = views.get(i);
-
-                    if (view.checkCollision(touchType, x, y)) {
-                        continueCheckingClicks = false;
-                        //Todo UniversalClickListener.handleClick(x,y,);
-                    }
-                }
-                break;
-            case TOUCH_DOWN:
-                setTouchDown(x, y);
-                break;
-            case TOUCH_UP:
-                setTouchUp();
-                break;
-        }
+    public static boolean isContinueCheckingClicks() {
+        return continueCheckingClicks;
     }
 
     public static void setContinueCheckingClicks(boolean continueCheckingClicks) {
         HUDManager.continueCheckingClicks = continueCheckingClicks;
     }
 
-    public static boolean isContinueCheckingClicks() {
-        return continueCheckingClicks;
+    public static HUDManager getHUDManager() {
+        return hudManager;
     }
 
     @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+        switch (touchType) {
+            case CLICK:
+                for (int i = (views.size() - 1); i >= 0; i--) {
+                    if (!continueCheckingClicks) {
+                        return true;
+                    }
+                    final View view = views.get(i);
+
+                    if (view.checkCollision(touchType, xPos, yPos)) {
+                        continueCheckingClicks = false;
+                        //Todo UniversalClickListener.handleClick(x,y,);
+                    }
+                }
+                break;
+            case TOUCH_DOWN:
+                setTouchDown(xPos, yPos);
+                break;
+            case TOUCH_UP:
+                setTouchUp();
+                break;
+        }
         return false;
     }
 
@@ -108,12 +109,6 @@ public class HUDManager implements InteractiveObject, Viewable {
                 view.fling(vx, vy);
         }
     }
-
-    @Override
-    public void handleFling(float x, float y, float velocityX, float velocityY) {
-
-    }
-
 
     @Override
     public boolean checkCollision(int xPos, int yPos, int width, int height) {

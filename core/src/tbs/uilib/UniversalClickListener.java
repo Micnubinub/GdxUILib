@@ -42,7 +42,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
                 case PAN:
                     isInitialTouchHUD = hudManager.checkCollision(touchType, x, y);
                 default:
-                    hudManager.handleClick(touchType, x, y);
+                    hudManager.checkCollision(touchType, x, y);
                     break;
             }
         }
@@ -77,7 +77,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
         initZoom = initZoom < 1 ? 1 : initZoom;
         click(TouchType.TOUCH_DOWN, (int) x, (int) y);
         isTouchDownSinceLastPan = true;
-        initZoom = camera.getZoom();
+//Todo        initZoom = camera.getZoom();
         tDownX = x;
         tDownY = y;
         return false;
@@ -99,7 +99,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
         continueCheckingForFling = true;
-        HUDManager.handleFling((int) initX, (int) initY, flingX, flingY);
+        HUDManager.getHUDManager().fling(flingX, flingY);
 
 //        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
 //        final double vectorScreen = Math.sqrt((w * w) + (h * h));
@@ -190,7 +190,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     }
 
     public enum TouchType {
-        CLICK, TOUCH_DOWN, TOUCH_UP, FLING, DRAG
+        CLICK, TOUCH_DOWN, TOUCH_UP, FLING, PAN
     }
 
     public interface OnClickListener {

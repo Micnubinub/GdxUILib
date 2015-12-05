@@ -4,9 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tbs.ui.test.DialogManager;
-import tbs.ui.test.Screen;
-import tbs.ui.test.Values;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import tbs.uilib.Screen;
+import tbs.uilib.UniversalClickListener;
+import tbs.uilib.Values;
 
 
 /**
@@ -26,7 +27,6 @@ public class Dialog extends View {
     //Todo somehow make it draw over other objects
     //Todo add dismiss on touch outside
     private int x, y;
-
     public Dialog(View view, int w, int h) {
         Dialog.view = view;
         setWidth(w);
@@ -51,13 +51,18 @@ public class Dialog extends View {
     }
 
     @Override
+    public void drag(int startX, int startY, int x, int y) {
+
+    }
+
+    @Override
     public void dispose() {
         //Todo fill in
     }
 
     @Override
-    public void handleFling(float x, float y, float velocityX, float velocityY) {
-        view.handleFling(x, y, velocityX, velocityY);
+    public void fling(float vx, float vy) {
+        view.fling(vx, vy);
     }
 
     public void setDialogListener(DialogListener listener) {
@@ -65,7 +70,7 @@ public class Dialog extends View {
     }
 
     @Override
-    public void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
         if (!showDialog)
             return;
         //Todo make sure its drawn in the center, with padding(add to the values you are meant to create in utility >utility.dialog_padding = 1...
@@ -73,13 +78,8 @@ public class Dialog extends View {
             batch.draw(dimmer, 0, 0, Screen.w, Screen.h);
 
         if (view != null) {
-            view.drawRelative(x, y);
+            view.draw(batch, renderer, x, y);
         }
-    }
-
-    @Override
-    public void drawBackground(SpriteBatch batch) {
-        //TODO
     }
 
     @Override
@@ -87,12 +87,12 @@ public class Dialog extends View {
         h = h < Values.DIALOG_PADDING ? Values.DIALOG_PADDING : h;
         final int diff = Screen.h - Values.DIALOG_PADDING - Values.DIALOG_PADDING;
         this.h = h > diff ? diff : h;
-        x = (Screen.w - view.w) / 2;
-        y = (Screen.h - view.h) / 2;
+        x = (int) ((Screen.w - view.w) / 2);
+        y = (int) ((Screen.h - view.h) / 2);
     }
 
     @Override
-    public boolean checkCollision(Screen.TouchType touchType, int xPos, int yPos) {
+    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         rect.set(x, y, w, h);
         if (!rect.contains(xPos, yPos)) {
             dismiss();
@@ -101,18 +101,14 @@ public class Dialog extends View {
         return view.checkCollision(touchType, xPos, yPos);
     }
 
-    @Override
-    public void drawRelative(SpriteBatch batch, int relX, int relY) {
-
-    }
 
     @Override
     public void setWidth(int w) {
         w = w < Values.DIALOG_PADDING ? Values.DIALOG_PADDING : w;
         final int diff = Screen.w - Values.DIALOG_PADDING - Values.DIALOG_PADDING;
         this.w = w > diff ? diff : w;
-        x = (Screen.w - view.w) / 2;
-        y = (Screen.h - view.h) / 2;
+        x = (int) ((Screen.w - view.w) / 2);
+        y = (int) ((Screen.h - view.h) / 2);
     }
 
     public void dismiss() {
@@ -121,14 +117,12 @@ public class Dialog extends View {
         if (listener != null)
             listener.onDismiss();
 
-        DialogManager.removeDialog(this);
-
-
+//      Todo  DialogManager.removeDialog(this);
     }
 
     public void show() {
         showDialog = true;
-        DialogManager.addDialog(this);
+//      Todo  DialogManager.addDialog(this);
         if (listener != null)
             listener.onShow();
     }

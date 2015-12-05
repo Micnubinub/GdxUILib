@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import tbs.uilib.Adapter;
 import tbs.uilib.HUDManager;
-import tbs.uilib.Screen;
 import tbs.uilib.UniversalClickListener;
 
 /**
@@ -22,7 +21,7 @@ public class ListView extends ScrollView {
     }
 
     @Override
-    public boolean checkCollision(Screen.TouchType touchType, int xPos, int yPos) {
+    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         for (int i = 0; i < adapter.getCount(); i++) {
             final View v = adapter.getView(i);
             if (HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h) && v.checkCollision(touchType, xPos, yPos)) {
@@ -36,7 +35,19 @@ public class ListView extends ScrollView {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+        if (!HUDManager.camera.isInFrustum(x, y, w, h))
+            return;
+        animator.update();
+        drawBackground(batch, renderer);
+        if (adapter == null || adapter.getCount() < 1)
+            return;
 
+        for (int i = 0; i < adapter.getCount(); i++) {
+            final View v = adapter.getView(i);
+            if (checkCollision((int) v.x, (int) v.y, (int) v.w, (int) v.h) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
+                v.draw(batch, renderer, relX, relY);
+            }
+        }
     }
 
     @Override
@@ -46,38 +57,6 @@ public class ListView extends ScrollView {
 
     public void setAdapter(Adapter adapter) {
         this.adapter = adapter;
-    }
-
-    @Override
-    public void drawRelative(SpriteBatch batch, int relX, int relY) {
-        //Todo
-        if ((!HUDManager.camera.isInFrustum(x, y, w, h)))
-            return;
-        super.drawRelative(batch, relX, relY);
-    }
-
-    @Override
-    public void draw(SpriteBatch batch) {
-        if (!HUDManager.camera.isInFrustum(x, y, w, h))
-            return;
-        animator.update();
-        drawBackground(batch);
-        if (adapter == null || adapter.getCount() < 1)
-            return;
-
-        for (int i = 0; i < adapter.getCount(); i++) {
-            final View v = adapter.getView(i);
-            if (checkCollision(v.x, v.y, v.w, v.h) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
-                v.draw(batch);
-            }
-        }
-
-
-    }
-
-    @Override
-    public void handleFling(int x, int y, float velocityX, float velocityY) {
-        super.handleFling(x, y, velocityX, velocityY);
     }
 
     @Override
