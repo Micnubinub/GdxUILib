@@ -12,32 +12,24 @@ import java.util.ArrayList;
  * Created by Michael on 1/28/2015.
  */
 public abstract class Screen implements com.badlogic.gdx.Screen {
-    //TODO
-    //TODO
-    //TODO Go through all the views making sure they notify the Universal click listener that they have received  fling or a click
-    //TODO set initCamx...
-    //TODO make sure all views keep the data they need to remake the texture atlas
-    //TODO 'security find-identity -v -p codesigning' for iosSignIdentity
-    //TODO
+  /* Todo 'security find-identity -v -p codesigning' for iosSignIdentity
 
-    //  robovm {
-    // Configure robovm
-//    iosSignIdentity = "LZU8BZAM9B.the.bigshots.lostplanet"
-//    iosProvisioningProfile = "path/to/profile"
-//    iosSkipSigning = false
-//    stdoutFifo = ""
-//    stderrFifo = ""
-//}
-
-
-    //TODO packaging for any platform navigate to the root
-    //Todo packaging desktop version>> gradlew desktop:dist
-    //Todo packaging android version>> gradlew android:assembleRelease
-    //Todo linux/ios chmod 755 gradlew
-    //Todo packaging ios version>> gradlew ios:createIPA
-    //Todo packaging web version>> gradlew html:dist
-    //Todo TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(colorTexture, x, y, w, h)
-    //Todo bring for the following classes > Screen, Utility
+      robovm {
+     Configure robovm
+    iosSignIdentity = "LZU8BZAM9B.the.bigshots.lostplanet"
+    iosProvisioningProfile = "path/to/profile"
+    iosSkipSigning = false
+    stdoutFifo = ""
+    stderrFifo = ""
+}
+     packaging for any platform navigate to the root
+     packaging desktop version>> gradlew desktop:dist
+     packaging android version>> gradlew android:assembleRelease
+     linux/ios chmod 755 gradlew
+     packaging ios version>> gradlew ios:createIPA
+     packaging web version>> gradlew html:dist
+     TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(colorTexture, x, y, w, h)
+     bring for the following classes > Screen, Utility*/
 
     private static final ArrayList<ValueAnimator> animations = new ArrayList<ValueAnimator>(10);
     public static int w, h;
@@ -226,6 +218,4 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
             e.printStackTrace();
         }
     }
-
-
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class HUDManager implements InteractiveObject, Viewable {
     public static HUDCamera camera;
     private static ArrayList<View> views = new ArrayList<View>();
-    //Todo show dialog
+    public static boolean continueCheckingClicks;
 
     public HUDManager() {
         camera = new HUDCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -64,18 +64,17 @@ public class HUDManager implements InteractiveObject, Viewable {
 
 
     @Override
-    public void handleClick(UniversalClickListener.TouchType touchType, int x, int y) {
+    public void(UniversalClickListener.TouchType touchType, int x, int y) {
         switch (touchType) {
             case CLICK:
-                //Todo check this loop
                 for (int i = (views.size() - 1); i >= 0; i--) {
-                    if (!Screen.isContinueCheckingClicks())
+                    if (!continueCheckingClicks)
                         return;
 
                     final View view = views.get(i);
 
                     if (view.checkCollision(touchType, x, y)) {
-                        Screen.setContinueCheckingClicks(false);
+                        continueCheckingClicks = false;
                         //Todo UniversalClickListener.handleClick(x,y,);
                     }
                 }
@@ -89,9 +88,12 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
     }
 
-    @Override
-    public void drawRelative(float x, float y) {
+    public static void setContinueCheckingClicks(boolean continueCheckingClicks) {
+        HUDManager.continueCheckingClicks = continueCheckingClicks;
+    }
 
+    public static boolean isContinueCheckingClicks() {
+        return continueCheckingClicks;
     }
 
     @Override
@@ -102,29 +104,14 @@ public class HUDManager implements InteractiveObject, Viewable {
     @Override
     public void fling(float vx, float vy) {
         for (View view : views) {
-            if (Screen.isContinueCheckingForFling())
-                view.handleFling(x, y, velocityX, velocityY);
+            if (continueCheckingClicks)
+                view.fling(vx, vy);
         }
     }
 
-
     @Override
-    public void drawRelative(int x, int y) {
-        final SpriteBatch batch = Screen.getBatch();
-        batch.end();
-        final Matrix4 proj = batch.getProjectionMatrix().cpy();
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
+    public void handleFling(float x, float y, float velocityX, float velocityY) {
 
-        if (views == null || views.size() < 1)
-            return;
-
-        for (int i = 0; i < views.size(); i++) {
-            views.get(i).draw();
-        }
-
-        Utility.drawCenteredText(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps", Color.WHITE, 0.25f, 1800, 60);
-        batch.setProjectionMatrix(proj);
     }
 
 
@@ -155,7 +142,20 @@ public class HUDManager implements InteractiveObject, Viewable {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+        batch.end();
+        final Matrix4 proj = batch.getProjectionMatrix().cpy();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
 
+        if (views == null || views.size() < 1)
+            return;
+
+        for (int i = 0; i < views.size(); i++) {
+            views.get(i).draw(batch, renderer, 0, 0);
+        }
+
+        Utility.drawCenteredText(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps", Color.WHITE, 0.25f, 1800, 60);
+        batch.setProjectionMatrix(proj);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class HUDManager implements InteractiveObject, Viewable {
         for (int i = 0; i < views.size(); i++) {
             final View view = views.get(i);
 
-            if (view.getState() != State.DISABLED && view.checkCollision(Screen.TouchType.TOUCH_DOWN, x, y)) {
+            if (view.getState() != State.DISABLED && view.checkCollision(UniversalClickListener.TouchType.TOUCH_DOWN, x, y)) {
                 view.setState(State.TOUCH_DOWN);
                 return;
             }

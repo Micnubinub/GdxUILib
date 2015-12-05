@@ -1,8 +1,10 @@
 package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import tbs.uilib.HUDManager;
 import tbs.uilib.Screen;
+import tbs.uilib.UniversalClickListener;
 import tbs.uilib.ValueAnimator;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
  * Created by Michael on 2/11/2015.
  */
 public class ScrollView extends LinearLayout {
+
     public final ArrayList<View> views = new ArrayList<View>();
     public int x, y;
     protected int scrollX, scrollY, initScrollX, initScrollY;
@@ -54,7 +57,6 @@ public class ScrollView extends LinearLayout {
 
         }
     };
-    private LayoutDirection layoutDirection = LayoutDirection.VERTICAL;
 
     @Override
     public void dispose() {
@@ -62,30 +64,24 @@ public class ScrollView extends LinearLayout {
     }
 
     @Override
-    public void handleFling(int x, int y, float velocityX, float velocityY) {
-        if (!Screen.isContinueCheckingForFling() || !checkCollision(Screen.TouchType.TOUCH_DOWN, x, y))
+    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+        animator.update();
+
+        if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
 
-        Screen.setContinueCheckingForFling(false);
-        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
-        final double vectorScreen = Math.sqrt((w * w) + (h * h));
-        panAnimator.setUpdateListener(flingListener);
-        panAnimator.setDuration((vector / vectorScreen) * 250);
-        panAnimator.start();
-        flingX = velocityX / 6;
-        flingY = velocityY / 6;
-        initScrollX = scrollX;
-        initScrollY = scrollY;
-
+        //Todo draw background
+        for (int i = 0; i < views.size(); i++) {
+            final View v = views.get(i);
+            if (HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h))
+                v.draw(batch, renderer, w, y);
+        }
     }
 
-    @Override
-    public void setLayoutDirection(LayoutDirection layoutDirection) {
-        this.layoutDirection = layoutDirection;
-    }
+
 
     @Override
-    public boolean checkCollision(Screen.TouchType touchType, int xPos, int yPos) {
+    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         rect.set(x, y, w, h);
         return rect.contains(xPos, yPos);
     }
@@ -118,51 +114,41 @@ public class ScrollView extends LinearLayout {
 //Todo setScroll
     }
 
-    public void fling(float startX, float startY, float vX, float vY) {
-        //Todo fill in
-    }
-
     @Override
-    public void drawRelative(SpriteBatch batch, int relX, int relY) {
-        //Todo fill in
-//        for (Drawable drawable : drawables) {
-//            if (w > 0 && h > 0) {
-//                batch.draw(drawable.sprite, relX + x, relY + y, w, h);
-//            }
-//        }
-
-        lastRelX = relX;
-        lastRelY = relY;
-
-        for (int i = 0; i < views.size(); i++) {
-            final View v = views.get(i);
-            if (checkCollision(v.x, v.y, v.w, v.h) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h))
-                v.drawRelative(batch, relX + x, relY + y);
-        }
-        getH();
-    }
-
-    @Override
-    public void draw(SpriteBatch batch) {
-        animator.update();
-
-        if (!HUDManager.camera.isInFrustum(x, y, w, h))
+    public void handleFling(float x, float y, float velocityX, float velocityY) {
+        super.handleFling(x, y, velocityX, velocityY);
+        if (!Screen.isContinueCheckingForFling() || !checkCollision(Screen.TouchType.TOUCH_DOWN, x, y))
             return;
 
-        //Todo draw background
-        for (int i = 0; i < views.size(); i++) {
-            final View v = views.get(i);
-            if (checkCollision(v.x, v.y, v.w, v.h) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h))
-                v.drawRelative(batch, w, y);
-        }
-        getH();
+        Screen.setContinueCheckingForFling(false);
+        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
+        final double vectorScreen = Math.sqrt((w * w) + (h * h));
+        panAnimator.setUpdateListener(flingListener);
+        panAnimator.setDuration((vector / vectorScreen) * 250);
+        panAnimator.start();
+        flingX = velocityX / 6;
+        flingY = velocityY / 6;
+        initScrollX = scrollX;
+        initScrollY = scrollY;
     }
 
     @Override
-    public boolean checkInGameCollision(int xPos, int yPos) {
-        return false;
-    }
+    public void fling(float vx, float vy) {
+        super.fling(vx, vy);
+        if (!Screen.isContinueCheckingForFling() || !checkCollision(Screen.TouchType.TOUCH_DOWN, x, y))
+            return;
 
+        Screen.setContinueCheckingForFling(false);
+        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
+        final double vectorScreen = Math.sqrt((w * w) + (h * h));
+        panAnimator.setUpdateListener(flingListener);
+        panAnimator.setDuration((vector / vectorScreen) * 250);
+        panAnimator.start();
+        flingX = velocityX / 6;
+        flingY = velocityY / 6;
+        initScrollX = scrollX;
+        initScrollY = scrollY;
+    }
 
     @Override
     public void setTouchDown(boolean touchDown) {

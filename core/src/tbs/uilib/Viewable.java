@@ -11,8 +11,6 @@ public interface Viewable {
 
     void setTouchDown(boolean touchDown);
 
-    void handleFling(final float x, final float y, final float velocityX, final float velocityY);
-
     Object getTag();
 
     int getID();

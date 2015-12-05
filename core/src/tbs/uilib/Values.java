@@ -12,8 +12,5 @@ public class Values {
     public static final int MESSAGE_BOX_TRIANGLE_LENGTH = Gdx.graphics.getHeight() / 33;
     public static final int TEXT_PADDING = Gdx.graphics.getHeight() / 170;
     public static final float GAME_SCALE = Gdx.graphics.getWidth() / 1920f;
-    //Todo use in textView
     public static final int LINE_SEPARATOR = Gdx.graphics.getHeight() / 190;
-//    public static final int X = 4;
-    //Todo populate with the default widths of the different drawables in the atlas
 }

@@ -1,8 +1,11 @@
 package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import tbs.moo.utility.HUDManager;
-import tbs.ui.test.Screen;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import tbs.uilib.Adapter;
+import tbs.uilib.HUDManager;
+import tbs.uilib.Screen;
+import tbs.uilib.UniversalClickListener;
 
 /**
  * Created by Michael on 3/10/2015.
@@ -21,7 +24,7 @@ public class ListView extends ScrollView {
     @Override
     public boolean checkCollision(Screen.TouchType touchType, int xPos, int yPos) {
         for (int i = 0; i < adapter.getCount(); i++) {
-            final View v = adapter.getItem(i);
+            final View v = adapter.getView(i);
             if (HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h) && v.checkCollision(touchType, xPos, yPos)) {
                 if (listener != null)
                     listener.onItemClick(v, i);
@@ -32,7 +35,12 @@ public class ListView extends ScrollView {
     }
 
     @Override
-    public void setOnClickListener(OnClickListener onClickListener) {
+    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+
+    }
+
+    @Override
+    public void setOnClickListener(UniversalClickListener.OnClickListener onClickListener) {
         super.setOnClickListener(onClickListener);
     }
 
@@ -58,7 +66,7 @@ public class ListView extends ScrollView {
             return;
 
         for (int i = 0; i < adapter.getCount(); i++) {
-            final View v = adapter.getItem(i);
+            final View v = adapter.getView(i);
             if (checkCollision(v.x, v.y, v.w, v.h) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
                 v.draw(batch);
             }

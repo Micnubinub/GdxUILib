@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 public class UILib extends ApplicationAdapter {
     //Todo test clipping here
+    //Todo test frustum in hudcam here
     SpriteBatch batch;
     Texture img;
     Rectangle scissors = new Rectangle(), clipBounds;

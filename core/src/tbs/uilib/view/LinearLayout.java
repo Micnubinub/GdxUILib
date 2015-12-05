@@ -1,6 +1,7 @@
 package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import tbs.uilib.Screen;
 
 import java.util.ArrayList;
@@ -12,6 +13,10 @@ public class LinearLayout extends View {
 
     protected final ArrayList<View> views = new ArrayList<View>();
     protected int h, w;
+    public static final int VERTICAL_LAYOUT = 0;
+    public static final int HORIZONTAL_LAYOUT = 1;
+    protected int layoutDirection;
+
 
     public int getH() {
 //Todo        switch (layoutDirection) {
@@ -85,22 +90,12 @@ public class LinearLayout extends View {
     }
 
     @Override
-    public void draw() {
-        SpriteBatch batch = Screen.getBatch();
+    public void drag(int startX, int startY, int x, int y) {
 
-        drawBackground();
-        drawRelative(0, 0);
-        int cumulative = 0;
-        for (int i = 0; i < views.size(); i++) {
-            final View v = views.get(i);
-            v.drawRelative(x, y + cumulative);
-            cumulative += v.h;
-        }
     }
 
-
     @Override
-    public void drawRelative(float relX, float relY) {
+    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
 //Todo test        if (!HUDManager.camera.isInFrustum(relX + x, relY + y, w, h))
 //            return;
         lastRelX = relX;
@@ -109,10 +104,13 @@ public class LinearLayout extends View {
         int cumulative = 0;
         for (int i = 0; i < views.size(); i++) {
             final View v = views.get(i);
-            v.drawRelative(relX + x, relY + y + cumulative);
+            v.draw(batch, renderer, relX + x, relY + y + cumulative);
             cumulative += v.h;
         }
+    }
 
+    public void setLayoutDirection(int layoutDirection) {
+        this.layoutDirection = layoutDirection;
     }
 
     @Override
