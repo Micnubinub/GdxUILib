@@ -111,7 +111,7 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
     }
 
     public static void addAnimator(ValueAnimator valueAnimator) {
-        System.out.println("null? :" + animations == null + "  contaned? : " + animations.contains(valueAnimator));
+        System.out.println("null? :" + (animations == null) + "  contaned? : " + animations.contains(valueAnimator));
         if (animations != null && !(animations.contains(valueAnimator)))
             animations.add(valueAnimator);
     }

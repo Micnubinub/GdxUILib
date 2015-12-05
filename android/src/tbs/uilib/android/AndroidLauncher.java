@@ -1,7 +1,6 @@
 package tbs.uilib.android;
 
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import tbs.uilib.UILib;
@@ -11,6 +10,7 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+//		config.numSamples = 4;
 		initialize(new UILib(), config);
 	}
 }

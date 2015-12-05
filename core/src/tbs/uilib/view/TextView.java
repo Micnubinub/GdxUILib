@@ -43,6 +43,11 @@ public class TextView extends View {
         this.w = w;
     }
 
+    @Override
+    public void fling(float vx, float vy) {
+
+    }
+
     public void setW(int w) {
         this.w = w;
         getTextStrings();

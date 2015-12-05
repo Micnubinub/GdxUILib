@@ -78,12 +78,6 @@ public class ScrollView extends LinearLayout {
     }
 
 
-    @Override
-    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
-        rect.set(x, y, w, h);
-        return rect.contains(xPos, yPos);
-    }
-
     public int getScrollX() {
         return scrollX;
     }
@@ -101,38 +95,12 @@ public class ScrollView extends LinearLayout {
     }
 
     @Override
-    public boolean checkCollision(int xPos, int yPos, int width, int height) {
-        rect.set(x, y, w, h);
-        rect2.set(xPos, yPos, width, height);
-        return rect.contains(rect2);
-    }
-
-    @Override
     public void drag(int startX, int startY, int x, int y) {
 //Todo setScroll
     }
 
     @Override
-    public void handleFling(float x, float y, float velocityX, float velocityY) {
-        super.handleFling(x, y, velocityX, velocityY);
-        if (!HUDManager.isContinueCheckingClicks() || !checkCollision(UniversalClickListener.TouchType.TOUCH_DOWN, (int) x, (int) y))
-            return;
-
-        HUDManager.setContinueCheckingClicks(false);
-        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
-        final double vectorScreen = Math.sqrt((w * w) + (h * h));
-        panAnimator.setUpdateListener(flingListener);
-        panAnimator.setDuration((vector / vectorScreen) * 250);
-        panAnimator.start();
-        flingX = velocityX / 6;
-        flingY = velocityY / 6;
-        initScrollX = scrollX;
-        initScrollY = scrollY;
-    }
-
-    @Override
     public void fling(float vx, float vy) {
-        super.fling(vx, vy);
         if (!HUDManager.isContinueCheckingClicks() || !checkCollision(UniversalClickListener.TouchType.TOUCH_DOWN, x, y))
             return;
 

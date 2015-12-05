@@ -21,14 +21,31 @@ public class ListView extends ScrollView {
     }
 
     @Override
+    public void fling(float vx, float vy) {
+        final double vector = Math.sqrt((vx * vx) + (vy * vy));
+        final double vectorScreen = Math.sqrt((w * w) + (h * h));
+        UniversalClickListener.confirmFling();
+//   Todo     panAnimator.setDuration((vector / vectorScreen) * 250);
+//        panAnimator.start();
+        flingX = vx / 6;
+        flingY = vy / 6;
+        initCamXBeforeFling = x;
+        initCamYBeforeFling = y;
+    }
+
+    @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+
+
         for (int i = 0; i < adapter.getCount(); i++) {
             final View v = adapter.getView(i);
-            if (HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h) && v.checkCollision(touchType, xPos, yPos)) {
-                if (listener != null)
-                    listener.onItemClick(v, i);
-                return true;
-            }
+            rect.set(x, y, w, h);
+            if (rect.contains(v.x, v.y, v.w, v.h))
+                if (HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h) && v.checkCollision(touchType, xPos, yPos)) {
+                    if (listener != null)
+                        listener.onItemClick(v, i);
+                    return true;
+                }
         }
         return false;
     }
@@ -37,7 +54,7 @@ public class ListView extends ScrollView {
     public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
-        animator.update();
+        panAnimator.update();
         drawBackground(batch, renderer);
         if (adapter == null || adapter.getCount() < 1)
             return;
@@ -48,11 +65,6 @@ public class ListView extends ScrollView {
                 v.draw(batch, renderer, relX, relY);
             }
         }
-    }
-
-    @Override
-    public void setOnClickListener(UniversalClickListener.OnClickListener onClickListener) {
-        super.setOnClickListener(onClickListener);
     }
 
     public void setAdapter(Adapter adapter) {

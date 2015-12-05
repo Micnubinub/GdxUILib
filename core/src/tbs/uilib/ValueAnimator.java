@@ -121,7 +121,6 @@ public class ValueAnimator {
 
         if ((System.currentTimeMillis() - startTime) >= duration) {
             running = false;
-            return;
         }
     }
 

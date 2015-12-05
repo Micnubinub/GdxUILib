@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
@@ -84,10 +85,11 @@ public class Utility {
     }
 
     public static void drawCenteredText(SpriteBatch batch, Color color, String text, float x, float y, float scale) {
+        final BitmapFont font = getFont();
         if (text == null || text.length() < 1 || font == null || batch == null)
             return;
 
-        final BitmapFont font = getFont();
+
         font.getData().setScale(scale);
 
         layout.setText(font, text);
@@ -98,11 +100,16 @@ public class Utility {
         font.draw(batch, text, left, y + (textHeight / 2));
     }
 
+    public static void print(String str) {
+        System.out.println(str);
+    }
+
     public static void drawCenteredText(Batch batch, Color color, String text, float x, float y, float scale) {
+        final BitmapFont font = getFont();
         if (text == null || text.length() < 1 || font == null || batch == null)
             return;
+        print("sraw");
 
-        final BitmapFont font = getFont();
         font.getData().setScale(scale);
 
         layout.setText(font, text);
@@ -110,6 +117,8 @@ public class Utility {
         final float left = x - (textWidth / 2);
         final float textHeight = font.getLineHeight();
         font.setColor(color);
+        if (!batch.isDrawing())
+            batch.begin();
         font.draw(batch, text, left, y + (textHeight / 2));
     }
 
@@ -122,16 +131,18 @@ public class Utility {
         return true;
     }
 
-    private static void clearScreen() {
+    public static void clearScreen() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
     }
 
     public static void drawCenteredText(SpriteBatch batch, String text, Color color, float scale, float x, float y) {
+        final BitmapFont font = getFont();
         if (text == null || text.length() < 1 || font == null || batch == null)
             return;
 
-        final BitmapFont font = getFont();
+
+        font.setColor(color);
         font.getData().setScale(scale);
 
         layout.setText(font, text);
@@ -141,14 +152,17 @@ public class Utility {
         x = x - (w / 2);
         y = y + (h / 2);
 
+        if (!batch.isDrawing())
+            batch.begin();
         font.draw(batch, text, x, y);
     }
 
     public static void drawCenterLeftText(SpriteBatch batch, String text, Color color, float scale, float x, float y) {
+        final BitmapFont font = getFont();
         if (text == null || text.length() < 1 || font == null || batch == null)
             return;
 
-        final BitmapFont font = getFont();
+        font.setColor(color);
         font.getData().setScale(scale);
 
         layout.setText(font, text);
@@ -157,14 +171,53 @@ public class Utility {
 
         y = y + (h / 2);
 
+        if (!batch.isDrawing())
+            batch.begin();
         font.draw(batch, text, x, y);
+    }
+
+
+    public static void initRenderer(SpriteBatch batch, ShapeRenderer renderer) {
+        if (batch.isDrawing())
+            try {
+                batch.end();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        if (!renderer.isDrawing())
+            try {
+                renderer.begin(ShapeRenderer.ShapeType.Filled);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
+
+    public static void initBatch(SpriteBatch batch, ShapeRenderer renderer) {
+        if (renderer.isDrawing())
+            try {
+                renderer.end();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        if (!batch.isDrawing())
+            try {
+                batch.begin();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     public static void drawBottomLeftText(SpriteBatch batch, String text, Color color, float scale, float x, float y) {
         if (text == null || text.length() < 1 || font == null || batch == null)
             return;
 
+        if (!batch.isDrawing())
+            batch.begin();
+
         final BitmapFont font = getFont();
+        font.setColor(color);
         font.getData().setScale(scale);
 
         layout.setText(font, text);

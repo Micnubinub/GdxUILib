@@ -17,24 +17,43 @@ public abstract class View implements InteractiveObject, Viewable {
     public State state = State.TOUCH_UP;
     public float x, y, w, h, initCamXBeforeFling, initCamYBeforeFling;
     public ArrayList<Drawable> drawables = new ArrayList<Drawable>();
-    public UniversalClickListener.OnClickListener onClickListener;
-    public UniversalClickListener.OnTouchListener onTouchListener;
+    public OnClickListener onClickListener;
+    public OnTouchListener onTouchListener;
     public Object tag;
     public Background background;
     protected float lastRelX, lastRelY, flingX, flingY;
     protected int id;
 
-    @Override
-    public void fling(float vx, float vy) {
-        final double vector = Math.sqrt((vx * vx) + (vy * vy));
-        final double vectorScreen = Math.sqrt((w * w) + (h * h));
-        UniversalClickListener.confirmFling();
-//   Todo     panAnimator.setDuration((vector / vectorScreen) * 250);
-//        panAnimator.start();
-        flingX = vx / 6;
-        flingY = vy / 6;
-        initCamXBeforeFling = x;
-        initCamYBeforeFling = y;
+    public static void initRenderer(SpriteBatch batch, ShapeRenderer renderer) {
+        if (batch.isDrawing())
+            try {
+                batch.end();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        if (!renderer.isDrawing())
+            try {
+                renderer.begin(ShapeRenderer.ShapeType.Filled);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
+
+    public static void initBatch(SpriteBatch batch, ShapeRenderer renderer) {
+        if (renderer.isDrawing())
+            try {
+                renderer.end();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        if (!batch.isDrawing())
+            try {
+                batch.begin();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     @Override
@@ -50,17 +69,21 @@ public abstract class View implements InteractiveObject, Viewable {
                 case TOUCH_DOWN:
                     setTouchDown(true);
                     if (onTouchListener != null)
-                        onTouchListener.onTouch(this, touchType);
+                        onTouchListener.onTouch(this, touchType, xPos, yPos);
+                    break;
+                case TOUCH_UP:
+                    setTouchDown(false);
+                    if (onTouchListener != null)
+                        onTouchListener.onTouch(this, touchType, xPos, yPos);
                     break;
                 case CLICK:
                     if (onClickListener != null)
-                        onClickListener.onClick(this);
+                        onClickListener.onClick(this, xPos, yPos);
                     break;
             }
         }
         return clicked;
     }
-
 
     @Override
     public boolean checkCollision(int xPos, int yPos, int width, int height) {
@@ -116,11 +139,21 @@ public abstract class View implements InteractiveObject, Viewable {
         this.y = y;
     }
 
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setSize(int w, int h) {
+        this.w = w;
+        this.h = h;
+    }
+
     public void setDrawables(ArrayList<Drawable> drawables) {
         this.drawables = drawables;
     }
 
-    public void setOnClickListener(UniversalClickListener.OnClickListener onClickListener) {
+    public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
@@ -136,8 +169,15 @@ public abstract class View implements InteractiveObject, Viewable {
         System.out.println(str);
     }
 
-
     public void drawBackground(final SpriteBatch batch, final ShapeRenderer renderer) {
         background.drawRelative(batch, renderer, x, y, w, h);
+    }
+
+    public interface OnClickListener {
+        void onClick(View view, int x, int y);
+    }
+
+    public interface OnTouchListener {
+        void onTouch(View view, UniversalClickListener.TouchType touchType, int x, int y);
     }
 }

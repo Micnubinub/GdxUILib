@@ -1,6 +1,7 @@
 package tbs.uilib;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
@@ -11,48 +12,31 @@ import tbs.uilib.view.View;
  */
 
 public class UniversalClickListener implements InputProcessor, GestureDetector.GestureListener {
-    public static boolean continueCheckingClicks, continueCheckingForFling;
     public static boolean isTouchDownSinceLastPan, isInitialTouchHUD;
     protected static int touchDownX1, touchDownY1;
     protected static float initX, initY, flingX, flingY;
     static float initZoom;
     static float tDownX, tDownY;
-    private static HUDManager hudManager;
+    private static UniversalClickListener universalClickListener;
+    private static InputMultiplexer multiplexer;
 
-    public UniversalClickListener(HUDManager manager) {
-        Gdx.input.setInputProcessor(this);
-        hudManager = manager;
+    private UniversalClickListener() {
+        Utility.print("universal click listener init");
     }
 
-    public static boolean isContinueCheckingForFling() {
-        return continueCheckingForFling;
-    }
+    public static UniversalClickListener getUniversalClickListener() {
+        if (universalClickListener == null) {
+            universalClickListener = new UniversalClickListener();
+            multiplexer = new InputMultiplexer(universalClickListener, new GestureDetector(universalClickListener));
+            Gdx.input.setInputProcessor(multiplexer);
+        }
 
-    public static void setContinueCheckingForFling(boolean continueCheckingForFling) {
-        continueCheckingForFling = continueCheckingForFling;
+        return universalClickListener;
     }
 
     public static void click(TouchType touchType, int x, int y) {
-        continueCheckingClicks = true;
         y = Gdx.graphics.getHeight() - y;
-
-        if (hudManager != null) {
-            switch (touchType) {
-                case TOUCH_DOWN:
-                case PAN:
-                    isInitialTouchHUD = hudManager.checkCollision(touchType, x, y);
-                default:
-                    hudManager.checkCollision(touchType, x, y);
-                    break;
-            }
-        }
-
-        if (!continueCheckingClicks)
-            return;
-
-        if (!continueCheckingClicks)
-            return;
-
+        HUDManager.getHUDManager().checkCollision(touchType, x, y);
     }
 
     public static void confirmClick() {
@@ -64,13 +48,6 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     }
 
-    public static boolean isContinueCheckingClicks() {
-        return continueCheckingClicks;
-    }
-
-    public static synchronized void setContinueCheckingClicks(boolean continueCheckingClicks) {
-        continueCheckingClicks = continueCheckingClicks;
-    }
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
@@ -93,13 +70,14 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     @Override
     public boolean longPress(float x, float y) {
         //TODO implement longPress
+        print("longPress");
         return false;
     }
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        continueCheckingForFling = true;
         HUDManager.getHUDManager().fling(flingX, flingY);
+        print("fling > " + velocityX + ", " + velocityY);
 
 //        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
 //        final double vectorScreen = Math.sqrt((w * w) + (h * h));
@@ -115,7 +93,6 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-
         return false;
     }
 
@@ -154,13 +131,12 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        click(TouchType.TOUCH_DOWN, screenX, screenY);
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        click(TouchType.TOUCH_UP, screenX, screenY);
+//        click(TouchType.TOUCH_UP, screenX, screenY);
         return false;
     }
 
@@ -169,6 +145,10 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
         //Todo handle touch events here, have a boolean called touch intercepted
 
         return false;
+    }
+
+    public void print(String s) {
+        Utility.print(s);
     }
 
     @Override
@@ -204,6 +184,5 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
         void onFling(final float velocityX, final float velocityY);
     }
-
 
 }

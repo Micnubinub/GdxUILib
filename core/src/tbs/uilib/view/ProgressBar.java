@@ -1,9 +1,7 @@
 package tbs.uilib.view;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import tbs.uilib.Screen;
-import tbs.uilib.UniversalClickListener;
-
 
 /**
  * Created by Michael on 1/31/2015.
@@ -23,65 +21,8 @@ public class ProgressBar extends View {
         setRadii();
     }
 
-    private void setRadii() {
-        r = Math.min(w, h);
-        innerR = r * 0.92f;
-        diff = r - innerR;
-    }
-
-    @Override
-    public void fling(float vx, float vy) {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
-
-    @Override
-    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
-        return false;
-    }
-
-    @Override
-    public void handleFling(float x, float y, float velocityX, float velocityY) {
-
-    }
-
-    @Override
-    public void drawRelative(float relX, float relY) {
-//  Todo      if (!HUDManager.camera.isInFrustum(x, y, w, h))
-//            return;
-
-        final ShapeRenderer renderer = Screen.getRenderer();
-        lastRelX = relX;
-        lastRelY = relY;
-
-        color.set(backgroundColor);
-        renderer.setColor(color);
-        renderer.circle(relX + x + r, relY + y + r, r);
-        renderer.rect(relX + x + r, relY + y, w - r - r, h);
-        renderer.circle(relX + x + w - r, relY + y, r);
-
-        intermidLength = w - h;
-        final float innerIntermidLength = intermidLength * (progress / max);
-
-        color.set(progressColor);
-        renderer.setColor(color);
-        renderer.circle(relX + x + r, relY + y + r, innerR);
-        renderer.circle(relX + x + r + innerIntermidLength, relY + y + diff, innerR);
-        renderer.rect(relX + x + r, relY + y + diff, innerIntermidLength, h - diff - diff);
-    }
-
-    public void setProgressColor(int progressColor) {
-        this.progressColor = progressColor;
-    }
-
-
-    public void reset() {
-        complete = false;
-        progress = 0;
+    public int getProgress() {
+        return progress;
     }
 
     public void setProgress(int progress) {
@@ -102,6 +43,60 @@ public class ProgressBar extends View {
         this.progress = progress;
     }
 
+    private void setRadii() {
+        r = Math.min(w, h) / 2;
+        innerR = r * 0.8f;
+        diff = r - innerR;
+    }
+
+    @Override
+    public void drag(int startX, int startY, int x, int y) {
+
+    }
+
+    @Override
+    public void fling(float vx, float vy) {
+
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+        lastRelX = relX;
+        lastRelY = relY;
+
+        color.set(backgroundColor);
+
+        initRenderer(batch, renderer);
+
+        renderer.setColor(color);
+        renderer.circle(relX + x + r, relY + y + r, r);
+        renderer.rect(relX + x + r, relY + y, w - r - r, h);
+        renderer.circle(relX + x + w - r, relY + y + r, r);
+
+        intermidLength = w - h;
+        final float innerIntermidLength = intermidLength * (progress / max);
+
+        color.set(progressColor);
+        renderer.setColor(color);
+        renderer.circle(relX + x + r, relY + y + r, innerR);
+        renderer.rect(relX + x + r, relY + y + diff, innerIntermidLength, h - diff - diff);
+        renderer.circle(relX + x + r + innerIntermidLength, relY + y + r, innerR);
+    }
+
+    public void setProgressColor(int progressColor) {
+        this.progressColor = progressColor;
+    }
+
+    public void reset() {
+        complete = false;
+        progress = 0;
+    }
+
     @Override
     public void setHeight(int h) {
         super.setHeight(h);
@@ -114,6 +109,12 @@ public class ProgressBar extends View {
         setRadii();
     }
 
+    public float getMax() {
+        max = max < 1 ? 1 : max;
+        return max;
+    }
+
+
     public void setProgressChangeListener(ProgressListener listener) {
         this.listener = listener;
     }
@@ -124,11 +125,6 @@ public class ProgressBar extends View {
 
     public boolean isRunning() {
         return !complete;
-    }
-
-    @Override
-    public void draw() {
-        drawRelative(0, 0);
     }
 
 

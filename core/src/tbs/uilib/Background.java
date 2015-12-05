@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.sun.istack.internal.NotNull;
 
 /**
  * Created by linde on 18-Oct-15.
@@ -15,7 +14,7 @@ public class Background {
     private Type type = Type.COLOR;
     private Object background;
 
-    public Background(Object background, @NotNull Type type) {
+    public Background(Object background, Type type) {
         this.type = type;
         this.background = background;
 

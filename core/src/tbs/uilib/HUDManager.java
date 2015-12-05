@@ -14,22 +14,31 @@ import java.util.ArrayList;
  * Created by Michael on 2/20/2015.
  */
 public class HUDManager implements InteractiveObject, Viewable {
+    private static final ArrayList<View> views = new ArrayList<View>();
     public static HUDCamera camera;
-    public static HUDManager hudManager = new HUDManager();
-    public static boolean continueCheckingClicks;
-    private static ArrayList<View> views = new ArrayList<View>();
+    public static boolean continueCheckingClicks, continueCheckingForFling;
+    private static HUDManager hudManager;
+    private static Matrix4 proj;
 
     private HUDManager() {
         if (hudManager == null) {
-            camera = new HUDCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            camera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
-            camera.position.x = camera.viewportWidth / 2;
-            camera.position.y = camera.viewportHeight / 2;
-            camera.update();
+            try {
+                camera = new HUDCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                UniversalClickListener.getUniversalClickListener();
+                camera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
+                camera.position.x = camera.viewportWidth / 2;
+                camera.position.y = camera.viewportHeight / 2;
+                camera.update();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public static void addView(View view) {
+        if (hudManager == null)
+            getHUDManager();
+
         if (!views.contains(view))
             views.add(view);
     }
@@ -59,6 +68,13 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
     }
 
+    public static boolean isContinueCheckingForFling() {
+        return continueCheckingForFling;
+    }
+
+    public static void setContinueCheckingForFling(boolean continueCheckingForFling) {
+        HUDManager.continueCheckingForFling = continueCheckingForFling;
+    }
 
     public static void print(String str) {
         System.out.println(str);
@@ -73,11 +89,14 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     public static HUDManager getHUDManager() {
+        if (hudManager == null)
+            hudManager = new HUDManager();
         return hudManager;
     }
 
     @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+        continueCheckingClicks = true;
         switch (touchType) {
             case CLICK:
                 for (int i = (views.size() - 1); i >= 0; i--) {
@@ -104,6 +123,7 @@ public class HUDManager implements InteractiveObject, Viewable {
 
     @Override
     public void fling(float vx, float vy) {
+        continueCheckingForFling = true;
         for (View view : views) {
             if (continueCheckingClicks)
                 view.fling(vx, vy);
@@ -137,13 +157,21 @@ public class HUDManager implements InteractiveObject, Viewable {
 
     @Override
     public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
-        batch.end();
-        final Matrix4 proj = batch.getProjectionMatrix().cpy();
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
+        if (batch.isDrawing())
+            batch.end();
 
-        if (views == null || views.size() < 1)
+        if (renderer.isDrawing())
+            renderer.end();
+
+        proj = batch.getProjectionMatrix().cpy();
+        if (camera != null) {
+            batch.setProjectionMatrix(camera.combined);
+            renderer.setProjectionMatrix(camera.combined);
+        }
+
+        if (views.size() < 1)
             return;
+
 
         for (int i = 0; i < views.size(); i++) {
             views.get(i).draw(batch, renderer, 0, 0);
@@ -187,7 +215,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     public static class HUDCamera extends OrthographicCamera {
         private static final Rect r1 = new Rect(), r2 = new Rect();
 
-        public HUDCamera(float viewportWidth, float viewportHeight) {
+        public HUDCamera(int viewportWidth, int viewportHeight) {
             super(viewportWidth, viewportHeight);
         }
 
@@ -197,9 +225,11 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
 
         public boolean isInFrustum(float x, float y, float w, float h) {
-            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
-            r2.set(camera.position.x + x, camera.position.y + y, w, h);
-            return r1.contains(r2);
+//            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
+//            r2.set(camera.position.x + x, camera.position.y + y, w, h);
+//            return r1.contains(r2);
+
+            return true;
         }
     }
 }

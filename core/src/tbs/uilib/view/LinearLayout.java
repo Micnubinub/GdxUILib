@@ -2,7 +2,6 @@ package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import tbs.uilib.Screen;
 
 import java.util.ArrayList;
 
@@ -11,10 +10,10 @@ import java.util.ArrayList;
  */
 public class LinearLayout extends View {
 
-    protected final ArrayList<View> views = new ArrayList<View>();
-    protected int h, w;
     public static final int VERTICAL_LAYOUT = 0;
     public static final int HORIZONTAL_LAYOUT = 1;
+    protected final ArrayList<View> views = new ArrayList<View>();
+    protected int h, w;
     protected int layoutDirection;
 
 
@@ -40,10 +39,6 @@ public class LinearLayout extends View {
         this.h = h;
     }
 
-    @Override
-    public void handleFling(float x, float y, float velocityX, float velocityY) {
-
-    }
 
     @Override
     public void fling(float vx, float vy) {
