@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
-import tbs.uilib.view.View;
 
 import java.util.ArrayList;
+
+import tbs.uilib.view.View;
 
 /**
  * Created by Michael on 2/20/2015.
@@ -96,6 +97,7 @@ public class HUDManager implements InteractiveObject, Viewable {
 
     @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+        print("checking for clicks > " + touchType);
         continueCheckingClicks = true;
         switch (touchType) {
             case CLICK:
@@ -104,7 +106,7 @@ public class HUDManager implements InteractiveObject, Viewable {
                         return true;
                     }
                     final View view = views.get(i);
-
+                    print("checking for clicks on view" + i);
                     if (view.checkCollision(touchType, xPos, yPos)) {
                         continueCheckingClicks = false;
                         //Todo UniversalClickListener.handleClick(x,y,);
@@ -120,6 +122,7 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
         return false;
     }
+
 
     @Override
     public void fling(float vx, float vy) {
@@ -225,11 +228,10 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
 
         public boolean isInFrustum(float x, float y, float w, float h) {
-//            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
-//            r2.set(camera.position.x + x, camera.position.y + y, w, h);
-//            return r1.contains(r2);
+            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
+            r2.set(camera.position.x + x, camera.position.y + y, w, h);
+            return r1.contains(r2);
 
-            return true;
         }
     }
 }

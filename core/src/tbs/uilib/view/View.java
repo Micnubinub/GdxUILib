@@ -3,9 +3,17 @@ package tbs.uilib.view;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import tbs.uilib.*;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
+
+import tbs.uilib.Background;
+import tbs.uilib.Drawable;
+import tbs.uilib.InteractiveObject;
+import tbs.uilib.Rect;
+import tbs.uilib.State;
+import tbs.uilib.UniversalClickListener;
+import tbs.uilib.Viewable;
 
 
 /**
@@ -15,13 +23,14 @@ public abstract class View implements InteractiveObject, Viewable {
     public static final Color color = new Color();
     //Todo implement some kind of wrapContent, and fill parent
     public State state = State.TOUCH_UP;
+    public static final Rectangle scissors = new Rectangle(), clipBounds = new Rectangle();
     public float x, y, w, h, initCamXBeforeFling, initCamYBeforeFling;
     public ArrayList<Drawable> drawables = new ArrayList<Drawable>();
     public OnClickListener onClickListener;
     public OnTouchListener onTouchListener;
     public Object tag;
     public Background background;
-    protected float lastRelX, lastRelY, flingX, flingY;
+    protected float lastRelX, lastRelY;
     protected int id;
 
     public static void initRenderer(SpriteBatch batch, ShapeRenderer renderer) {
@@ -58,10 +67,11 @@ public abstract class View implements InteractiveObject, Viewable {
 
     @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
-        if (state == State.DISABLED)
+        //Todo
+        if (state == State.DISABLED || ((touchType != UniversalClickListener.TouchType.CLICK) && (onTouchListener == null)))
             return false;
         rect.set(lastRelX + x, lastRelY + y, w, h);
-
+        print("checking click > " + rect.toString());
         final boolean clicked = rect.contains(xPos, yPos);
 
         if (clicked && !(state == State.DISABLED)) {
@@ -90,6 +100,14 @@ public abstract class View implements InteractiveObject, Viewable {
         rect.set(x, y, w, h);
         rect2.set(xPos, yPos, width, height);
         return rect.contains(rect2);
+    }
+
+    public void setHeight(float h) {
+        this.h = h;
+    }
+
+    public void setWidth(float w) {
+        this.w = w;
     }
 
     public State getState() {
@@ -123,14 +141,6 @@ public abstract class View implements InteractiveObject, Viewable {
         this.background = background;
     }
 
-    public void setHeight(int h) {
-        this.h = h;
-    }
-
-    public void setWidth(int w) {
-        this.w = w;
-    }
-
     public void setX(int x) {
         this.x = x;
     }
@@ -159,7 +169,12 @@ public abstract class View implements InteractiveObject, Viewable {
 
     @Override
     public void setTouchDown(boolean touchDown) {
-        setState(touchDown ? State.TOUCH_DOWN : State.TOUCH_UP);
+        state = touchDown ? State.TOUCH_DOWN : State.TOUCH_UP;
+    }
+
+    public Rect getViewBounds() {
+        rect.set(lastRelX + x, lastRelY + y, w, h);
+        return rect;
     }
 
     @Override

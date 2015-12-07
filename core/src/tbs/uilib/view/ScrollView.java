@@ -2,11 +2,11 @@ package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import tbs.uilib.HUDManager;
-import tbs.uilib.UniversalClickListener;
-import tbs.uilib.ValueAnimator;
 
 import java.util.ArrayList;
+
+import tbs.uilib.HUDManager;
+import tbs.uilib.ValueAnimator;
 
 /**
  * Created by Michael on 2/11/2015.
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class ScrollView extends LinearLayout {
 
     public final ArrayList<View> views = new ArrayList<View>();
-    public int x, y;
     protected int scrollX, scrollY, initScrollX, initScrollY;
     protected final ValueAnimator panAnimator = new ValueAnimator(ValueAnimator.Interpolator.DECELERATE, new ValueAnimator.UpdateListener() {
         @Override
@@ -101,7 +100,7 @@ public class ScrollView extends LinearLayout {
 
     @Override
     public void fling(float vx, float vy) {
-        if (!HUDManager.isContinueCheckingClicks() || !checkCollision(UniversalClickListener.TouchType.TOUCH_DOWN, x, y))
+        if (!HUDManager.isContinueCheckingClicks())
             return;
 
         HUDManager.setContinueCheckingClicks(false);

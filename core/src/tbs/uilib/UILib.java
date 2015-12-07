@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import tbs.uilib.view.ProgressBar;
-import tbs.uilib.view.View;
 
 import java.util.Random;
+
+import tbs.uilib.view.Button;
+import tbs.uilib.view.TextView;
+import tbs.uilib.view.View;
 
 public class UILib extends ApplicationAdapter {
     final Random rand = new Random();
@@ -22,8 +24,9 @@ public class UILib extends ApplicationAdapter {
     Texture img;
     Rectangle scissors = new Rectangle(), clipBounds;
     OrthographicCamera camera;
-    int w, h;
+    int w, h, imgW, imgH;
     long ticNano;
+    public static int x, y;
 
 
     @Override
@@ -33,22 +36,40 @@ public class UILib extends ApplicationAdapter {
         img = new Texture("badlogic.jpg");
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
+        x = rand.nextInt(w);
+        y = rand.nextInt(h);
         camera = new OrthographicCamera(w, h);
         camera.position.set(w / 2, h / 2, 0);
-        clipBounds = new Rectangle(w / 2, h / 2, w, h);
+        imgH = h / 10;
+        imgW = w / 7;
 
-        final ProgressBar button = new ProgressBar(100, 0xffbb00, 0xbbff00, w / 2, h / 14);
-        button.setPosition((w / 2) - (int) (button.w / 2), (h / 2) - (int) (button.h / 2));
+        final TextView textView = new TextView("Mike Check 1,2,1,2 please work...Pls, i prayinh here", w / 9);
+        textView.setPosition(w / 5, h / 5);
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view, int x, int y) {
+                Utility.print("w > " + textView.getW());
+                textView.setW(w / (1 + rand.nextInt(10)));
+            }
+        });
+
+        final Button button = new Button("Button Mike Check 1,2,1,2 please work...Pls, i prayinh here");
+        button.setPosition(w / 5, h / 2);
+        button.setSize(w / 9, w / 9);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view, int x, int y) {
-                button.setProgress(rand.nextInt((int) button.getMax()));
-                Utility.print("click > " + button.getMax());
+                Utility.print("w > " + button.w);
+                button.setW(w / (1 + rand.nextInt(10)));
             }
         });
+
         HUDManager.addView(button);
+        HUDManager.addView(textView);
     }
+
 
     @Override
     public void dispose() {
@@ -67,6 +88,10 @@ public class UILib extends ApplicationAdapter {
         batch.begin();
         HUDManager.getHUDManager().draw(batch, renderer, 0, 0);
 
+        Utility.initBatch(batch, renderer);
+//        Utility.drawCenteredText(batch, Color.WHITE,
+//                HUDManager.getHUDCamera().isInFrustum(x, y, imgW, imgH) ? "is in frus" : "out of frus", w / 2, h / 2, 0.3f);
+        batch.draw(img, x, y, imgW, imgH);
         if (batch.isDrawing())
             batch.end();
 

@@ -13,11 +13,10 @@ public class LinearLayout extends View {
     public static final int VERTICAL_LAYOUT = 0;
     public static final int HORIZONTAL_LAYOUT = 1;
     protected final ArrayList<View> views = new ArrayList<View>();
-    protected int h, w;
     protected int layoutDirection;
 
 
-    public int getH() {
+    public float getH() {
 //Todo        switch (layoutDirection) {
 //            case VERTICAL:
 //                h = 0;
@@ -55,7 +54,7 @@ public class LinearLayout extends View {
             views.clear();
     }
 
-    public int getW() {
+    public float getW() {
 
 //  TODO      switch (layoutDirection) {
 //            case HORIZONTAL:

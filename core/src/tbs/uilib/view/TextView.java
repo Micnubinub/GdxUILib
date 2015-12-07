@@ -3,9 +3,9 @@ package tbs.uilib.view;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 import tbs.uilib.Drawable;
 import tbs.uilib.HUDManager;
-import tbs.uilib.Screen;
 import tbs.uilib.Utility;
 
 
@@ -19,9 +19,10 @@ public class TextView extends View {
     protected float textScale = 0.2f, startingPoint;
     protected Color textColor = new Color(0xffffffff);
     protected float textHeight;
-    protected int w, h, x, y;
     protected String[] textStrings = {};
     protected Gravity gravity;
+    public boolean isHeightSetManually;
+
 
     public TextView(int w) {
         this.w = w;
@@ -48,9 +49,26 @@ public class TextView extends View {
 
     }
 
-    public void setW(int w) {
+    @Override
+    public void setWidth(float w) {
         this.w = w;
         getTextStrings();
+    }
+
+    @Override
+    public void setHeight(float h) {
+        super.setHeight(h);
+        isHeightSetManually = true;
+    }
+
+    public void setAutoHeight(boolean autoHeight){
+        isHeightSetManually = !autoHeight;
+    }
+
+    @Override
+    public void setSize(int w, int h) {
+        super.setSize(w, h);
+        isHeightSetManually = true;
     }
 
     @Override
@@ -59,10 +77,6 @@ public class TextView extends View {
         getTextStrings();
     }
 
-    public void setH(int h) {
-        this.h = h;
-        getTextStrings();
-    }
 
     @Override
     public void setY(int y) {
@@ -91,28 +105,29 @@ public class TextView extends View {
     public void getTextStrings() {
         if (text == null || text.length() < 1)
             return;
-// Todo       Screen.font.setScale(textScale);
-//        final BitmapFont.TextBounds bounds = Screen.font.getBounds(text);
-//
-//        int numLines = (int) Math.ceil(bounds.width / (w));
-//        numLines = numLines > 25 ? 25 : numLines;
-//
-//        final int numLettersInOneLine = (int) Math.ceil(text.length() / numLines);
-//        textHeight = bounds.height;
-//        h = Math.round((textHeight * numLines) + (padding * (numLines + 1)));
-//        startingPoint = (y + h - padding) - (textHeight / 2);
-//        textStrings = new String[numLines];
-//        for (int i = 0; i < numLines; i++) {
-//            String out = "";
-//            if (!(numLines - 1 == i)) {
-//                int index = i * numLettersInOneLine;
-//                if (!(index + numLettersInOneLine > text.length()))
-//                    out = text.substring(index, index + numLettersInOneLine);
-//            } else {
-//                out = text.substring(i * numLettersInOneLine, text.length());
-//            }
-//            textStrings[i] = out;
-//        }
+        Utility.getFont().getData().setScale(textScale);
+        Utility.layout.setText(Utility.getFont(), text);
+
+        int numLines = (int) Math.ceil(Utility.layout.width / (w));
+        numLines = numLines > 25 ? 25 : numLines;
+
+        final int numLettersInOneLine = (int) Math.ceil(text.length() / numLines);
+        textHeight = Utility.layout.height;
+        h = Math.round((textHeight * numLines) + (padding * (numLines + 1)));
+        startingPoint = (y + h - padding) - (textHeight / 2);
+        if (textStrings == null || numLines != textStrings.length)
+            textStrings = new String[numLines];
+        for (int i = 0; i < numLines; i++) {
+            String out = "";
+            if (!(numLines - 1 == i)) {
+                int index = i * numLettersInOneLine;
+                if (!(index + numLettersInOneLine > text.length()))
+                    out = text.substring(index, index + numLettersInOneLine);
+            } else {
+                out = text.substring(i * numLettersInOneLine, text.length());
+            }
+            textStrings[i] = out;
+        }
     }
 
 
@@ -147,13 +162,21 @@ public class TextView extends View {
                 drawable.draw(batch, renderer, relX, relY);
             }
         }
-
-        drawText(Screen.getBatch(), 0, 0);
+        initBatch(batch, renderer);
+        drawText(batch, 0, 0);
     }
 
     public void setGravity(Gravity gravity) {
         this.gravity = gravity;
         getTextStrings();
+    }
+
+    public float getW() {
+        return w;
+    }
+
+    public float getH() {
+        return h;
     }
 
     @Override

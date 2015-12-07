@@ -26,7 +26,7 @@ public class Rect {
     }
 
     public boolean contains(float x, float y, float w, float h) {
-        return contains(x, y) || contains(x + w, y + h);
+        return contains(x, y) || contains(x + w, y + h) ;
     }
 
     public boolean contains(Rect r) {

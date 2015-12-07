@@ -1,10 +1,12 @@
 package tbs.uilib;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+
 import tbs.uilib.view.View;
 
 /**
@@ -21,10 +23,11 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     private static InputMultiplexer multiplexer;
 
     private UniversalClickListener() {
-        Utility.print("universal click listener init");
+        Utility.print("universal click listener declaration");
     }
 
     public static UniversalClickListener getUniversalClickListener() {
+        Utility.print("universal click listener init");
         if (universalClickListener == null) {
             universalClickListener = new UniversalClickListener();
             multiplexer = new InputMultiplexer(universalClickListener, new GestureDetector(universalClickListener));
@@ -45,7 +48,6 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     public static void confirmFling() {
         isTouchDownSinceLastPan = false;
-
     }
 
 
@@ -116,6 +118,22 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean keyDown(int keycode) {
+        switch (keycode) {
+            case Input.Keys.LEFT:
+                UILib.x -= 15;
+                break;
+            case Input.Keys.RIGHT:
+                UILib.x += 15;
+                break;
+
+            case Input.Keys.UP:
+                UILib.y += 15;
+                break;
+
+            case Input.Keys.DOWN:
+                UILib.y -= 15;
+                break;
+        }
         return false;
     }
 

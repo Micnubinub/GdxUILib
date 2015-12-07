@@ -45,7 +45,7 @@ public class ProgressBar extends View {
 
     private void setRadii() {
         r = Math.min(w, h) / 2;
-        innerR = r * 0.8f;
+        innerR = r * 0.85f;
         diff = r - innerR;
     }
 
