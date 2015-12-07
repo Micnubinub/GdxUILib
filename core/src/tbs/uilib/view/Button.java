@@ -1,8 +1,8 @@
 package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import tbs.uilib.Drawable;
@@ -40,30 +40,32 @@ public class Button extends View {
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(float relX, float relY) {
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
+        lastRelX = relX;
+        lastRelY = relY;
+        drawBackground(relX, relY);
 
-        if (background != null)
-            background.drawRelative(batch, renderer, x, y, w, h);
-
-        clipBounds.set(relX+x, relY+y, w,h);
-        ScissorStack.calculateScissors(HUDManager.camera, batch.getTransformMatrix(), clipBounds, scissors);
-//        print("scizzor > " + scissors.toString());
-        ScissorStack.pushScissors(scissors);
-
+        final SpriteBatch batch = getSpriteBatch(relX, relY);
         for (Drawable drawable : drawables) {
             if (w > 0 && h > 0) {
                 batch.draw(drawable.sprite, x, y, w, h);
             }
         }
 
-        Utility.drawCenteredText(batch, text, textColor, 0.5f, x + (w / 2), y + (h / 2));
-        batch.flush();
+        Utility.drawCenteredText(batch, text, textColor, 0.5f, relX + x + (w / 2), relY + y + (h / 2));
+
+    }
+
+    public void flushRenderer(Batch shapeRendererOrSpriteBatch) {
+        try {
+            shapeRendererOrSpriteBatch.flush();
+        } catch (Exception e) {
+        }
         try {
             ScissorStack.popScissors();
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

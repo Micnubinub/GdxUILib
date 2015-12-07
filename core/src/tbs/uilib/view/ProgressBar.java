@@ -1,6 +1,5 @@
 package tbs.uilib.view;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -65,13 +64,13 @@ public class ProgressBar extends View {
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(float relX, float relY) {
         lastRelX = relX;
         lastRelY = relY;
 
         color.set(backgroundColor);
 
-        initRenderer(batch, renderer);
+        final ShapeRenderer renderer = getShapeRenderer(relX, relY);
 
         renderer.setColor(color);
         renderer.circle(relX + x + r, relY + y + r, r);
@@ -98,13 +97,13 @@ public class ProgressBar extends View {
     }
 
     @Override
-    public void setHeight(int h) {
+    public void setHeight(float h) {
         super.setHeight(h);
         setRadii();
     }
 
     @Override
-    public void setWidth(int w) {
+    public void setWidth(float w) {
         super.setWidth(w);
         setRadii();
     }

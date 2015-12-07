@@ -92,25 +92,27 @@ public class Background {
         tmpC = 0x00000099;
     }
 
-    public void drawRelative(final SpriteBatch batch, final ShapeRenderer renderer, float x, float y, float w, float h) {
+    public ShapeRenderer getShapeRenderer(float relX, float relY) {
+        return Utility.initShapeRenderer(HUDManager.getSpriteBatch(), HUDManager.getShapeRenderer(), scissors, clipBounds);
+    }
+
+    public SpriteBatch getSpriteBatch(float relX, float relY) {
+        return Utility.initSpriteBatch(HUDManager.getSpriteBatch(), HUDManager.getShapeRenderer(), scissors, clipBounds);
+    }
+
+    public void drawRelative(float x, float y, float w, float h) {
         clipBounds.set(x, y, w, h);
-
-
 
         switch (type) {
             case COLOR:
-                Utility.initRenderer(batch, renderer);
-                ScissorStack.calculateScissors(HUDManager.camera, renderer.getTransformMatrix(), clipBounds, scissors);
-                ScissorStack.pushScissors(scissors);
+                final ShapeRenderer renderer = Utility.initShapeRenderer(HUDManager.getSpriteBatch(), HUDManager.getShapeRenderer(), scissors, clipBounds);
                 color.set(tmpC);
                 renderer.setColor(color);
                 renderer.rect(x, y, w, h);
                 renderer.flush();
                 break;
             case REGION:
-                Utility.initBatch(batch, renderer);
-                ScissorStack.calculateScissors(HUDManager.camera, batch.getTransformMatrix(), clipBounds, scissors);
-                ScissorStack.pushScissors(scissors);
+                final SpriteBatch batch = Utility.initSpriteBatch(HUDManager.getSpriteBatch(), HUDManager.getShapeRenderer(), scissors, clipBounds);
                 TextureAtlas.AtlasRegion region;
                 try {
                     region = (TextureAtlas.AtlasRegion) background;
@@ -125,8 +127,6 @@ public class Background {
                 batch.flush();
                 break;
         }
-
-        ScissorStack.popScissors();
     }
 
     public enum Type {

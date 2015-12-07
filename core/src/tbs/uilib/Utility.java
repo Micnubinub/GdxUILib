@@ -5,7 +5,11 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -177,36 +181,81 @@ public class Utility {
     }
 
 
-    public static void initRenderer(SpriteBatch batch, ShapeRenderer renderer) {
+    public static ShapeRenderer initShapeRenderer(SpriteBatch batch, ShapeRenderer renderer, Rectangle scissors, Rectangle clipBounds) {
         if (batch.isDrawing())
             try {
-                batch.end();
+                try {
+                    batch.end();
+                } catch (Exception e) {
+                }
+                try {
+                    ScissorStack.popScissors();
+                } catch (Exception e) {
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-        if (!renderer.isDrawing())
+        if (!renderer.isDrawing()) {
             try {
+                ScissorStack.calculateScissors(HUDManager.camera, renderer.getTransformMatrix(), clipBounds, scissors);
+                ScissorStack.pushScissors(scissors);
                 renderer.begin(ShapeRenderer.ShapeType.Filled);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                renderer.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                ScissorStack.popScissors();
+            } catch (Exception e) {
+            }
+        }
+
+        return renderer;
     }
 
-    public static void initBatch(SpriteBatch batch, ShapeRenderer renderer) {
+
+    public static SpriteBatch initSpriteBatch(SpriteBatch batch, ShapeRenderer renderer, Rectangle scissors, Rectangle clipBounds) {
         if (renderer.isDrawing())
             try {
-                renderer.end();
+                try {
+                    renderer.end();
+                } catch (Exception e) {
+                }
+                try {
+                    ScissorStack.popScissors();
+                } catch (Exception e) {
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-        if (!batch.isDrawing())
+        if (!batch.isDrawing()) {
             try {
+                ScissorStack.calculateScissors(HUDManager.camera, batch.getTransformMatrix(), clipBounds, scissors);
+                ScissorStack.pushScissors(scissors);
                 batch.begin();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                batch.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                ScissorStack.popScissors();
+            } catch (Exception e) {
+            }
+        }
+
+        return batch;
     }
 
     public static void drawBottomLeftText(SpriteBatch batch, String text, Color color, float scale, float x, float y) {

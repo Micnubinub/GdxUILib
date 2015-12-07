@@ -4,11 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.util.ArrayList;
 
 import tbs.uilib.Background;
 import tbs.uilib.Drawable;
+import tbs.uilib.HUDManager;
 import tbs.uilib.InteractiveObject;
 import tbs.uilib.Rect;
 import tbs.uilib.State;
@@ -33,36 +35,83 @@ public abstract class View implements InteractiveObject, Viewable {
     protected float lastRelX, lastRelY;
     protected int id;
 
-    public static void initRenderer(SpriteBatch batch, ShapeRenderer renderer) {
+    public final ShapeRenderer initShapeRenderer(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
         if (batch.isDrawing())
             try {
-                batch.end();
+                try {
+                    batch.end();
+                } catch (Exception e) {
+                }
+                try {
+                    ScissorStack.popScissors();
+                } catch (Exception e) {
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-        if (!renderer.isDrawing())
+        if (!renderer.isDrawing()) {
             try {
+                clipBounds.set(relX + x, relY + y, w, h);
+                ScissorStack.calculateScissors(HUDManager.camera, renderer.getTransformMatrix(), clipBounds, scissors);
+                ScissorStack.pushScissors(scissors);
                 renderer.begin(ShapeRenderer.ShapeType.Filled);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                renderer.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                ScissorStack.popScissors();
+            } catch (Exception e) {
+            }
+        }
+
+        return renderer;
     }
 
-    public static void initBatch(SpriteBatch batch, ShapeRenderer renderer) {
+
+    public final SpriteBatch initSpriteBatch(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
         if (renderer.isDrawing())
             try {
-                renderer.end();
+                try {
+                    renderer.end();
+                } catch (Exception e) {
+                }
+                try {
+                    ScissorStack.popScissors();
+                } catch (Exception e) {
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-        if (!batch.isDrawing())
+        if (!batch.isDrawing()) {
             try {
+                clipBounds.set(relX + x, relY + y, w, h);
+                ScissorStack.calculateScissors(HUDManager.camera, batch.getTransformMatrix(), clipBounds, scissors);
+                ScissorStack.pushScissors(scissors);
                 batch.begin();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                batch.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                ScissorStack.popScissors();
+            } catch (Exception e) {
+            }
+        }
+
+        return batch;
     }
 
     @Override
@@ -93,6 +142,14 @@ public abstract class View implements InteractiveObject, Viewable {
             }
         }
         return clicked;
+    }
+
+    public ShapeRenderer getShapeRenderer(float relX, float relY) {
+        return initShapeRenderer(HUDManager.getSpriteBatch(), HUDManager.getShapeRenderer(), relX, relY);
+    }
+
+    public SpriteBatch getSpriteBatch(float relX, float relY) {
+        return initSpriteBatch(HUDManager.getSpriteBatch(), HUDManager.getShapeRenderer(), relX, relY);
     }
 
     @Override
@@ -177,6 +234,14 @@ public abstract class View implements InteractiveObject, Viewable {
         return rect;
     }
 
+    public float getWidth() {
+        return w;
+    }
+
+    public float getHeight() {
+        return h;
+    }
+
     @Override
     public abstract void dispose();
 
@@ -184,8 +249,9 @@ public abstract class View implements InteractiveObject, Viewable {
         System.out.println(str);
     }
 
-    public void drawBackground(final SpriteBatch batch, final ShapeRenderer renderer) {
-        background.drawRelative(batch, renderer, x, y, w, h);
+    public void drawBackground(final float relX, final float relY) {
+        if (background != null)
+            background.drawRelative(relX + x, relY + y, w, h);
     }
 
     public interface OnClickListener {

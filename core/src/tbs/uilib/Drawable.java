@@ -44,7 +44,7 @@ public class Drawable extends GameObject implements Viewable {
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(float relX, float relY) {
 
     }
 

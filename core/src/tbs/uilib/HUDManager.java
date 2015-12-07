@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,8 @@ public class HUDManager implements InteractiveObject, Viewable {
     public static boolean continueCheckingClicks, continueCheckingForFling;
     private static HUDManager hudManager;
     private static Matrix4 proj;
+    private static ShapeRenderer shapeRenderer;
+    private static SpriteBatch spriteBatch;
 
     private HUDManager() {
         if (hudManager == null) {
@@ -34,6 +37,14 @@ public class HUDManager implements InteractiveObject, Viewable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static ShapeRenderer getShapeRenderer() {
+        return shapeRenderer;
+    }
+
+    public static SpriteBatch getSpriteBatch() {
+        return spriteBatch;
     }
 
     public static void addView(View view) {
@@ -67,6 +78,11 @@ public class HUDManager implements InteractiveObject, Viewable {
             if (tag.equals(v.getTag()))
                 views.remove(v);
         }
+    }
+
+    @Override
+    public void draw(float relX, float relY) {
+
     }
 
     public static boolean isContinueCheckingForFling() {
@@ -158,8 +174,10 @@ public class HUDManager implements InteractiveObject, Viewable {
         return 0;
     }
 
-    @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(final SpriteBatch batch, final ShapeRenderer renderer) {
+        shapeRenderer = renderer;
+        spriteBatch = batch;
+
         if (batch.isDrawing())
             batch.end();
 
@@ -177,11 +195,19 @@ public class HUDManager implements InteractiveObject, Viewable {
 
 
         for (int i = 0; i < views.size(); i++) {
-            views.get(i).draw(batch, renderer, 0, 0);
+            views.get(i).draw(0, 0);
         }
 
         Utility.drawCenteredText(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps", Color.WHITE, 0.25f, 1800, 60);
         batch.setProjectionMatrix(proj);
+
+        if (batch.isDrawing())
+            batch.end();
+
+        if (renderer.isDrawing())
+            renderer.end();
+        try {
+            ScissorStack.popScissors();} catch (Exception e) {}
     }
 
     @Override
@@ -228,10 +254,10 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
 
         public boolean isInFrustum(float x, float y, float w, float h) {
-            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
-            r2.set(camera.position.x + x, camera.position.y + y, w, h);
-            return r1.contains(r2);
-
+//            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
+//            r2.set(camera.position.x + x, camera.position.y + y, w, h);
+//            return r1.contains(r2);
+            return true;
         }
     }
 }

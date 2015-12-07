@@ -1,7 +1,5 @@
 package tbs.uilib.view;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import tbs.uilib.Adapter;
 import tbs.uilib.HUDManager;
 import tbs.uilib.UniversalClickListener;
@@ -16,6 +14,7 @@ public class ListView extends ScrollView {
 
 
     public ListView(Adapter adapter, OnItemClickListener listener) {
+        super(true);
         this.listener = listener;
         this.adapter = adapter;
     }
@@ -51,18 +50,20 @@ public class ListView extends ScrollView {
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(float relX, float relY) {
+        lastRelX = relX;
+        lastRelY = relY;
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
         panAnimator.update();
-        drawBackground(batch, renderer);
+        drawBackground(relX,relY);
         if (adapter == null || adapter.getCount() < 1)
             return;
 
         for (int i = 0; i < adapter.getCount(); i++) {
             final View v = adapter.getView(i);
             if (checkCollision((int) v.x, (int) v.y, (int) v.w, (int) v.h) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
-                v.draw(batch, renderer, relX, relY);
+                v.draw(relX, relY);
             }
         }
     }

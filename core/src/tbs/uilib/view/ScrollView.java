@@ -1,8 +1,5 @@
 package tbs.uilib.view;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
 import java.util.ArrayList;
 
 import tbs.uilib.HUDManager;
@@ -56,23 +53,29 @@ public class ScrollView extends LinearLayout {
         }
     };
 
+    public ScrollView(boolean resizeChildrenWhenParentResized) {
+        super(resizeChildrenWhenParentResized);
+    }
+
     @Override
     public void dispose() {
         //Todo fill in
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(float relX, float relY) {
         panAnimator.update();
-
+        lastRelX = relX;
+        lastRelY = relY;
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
 
-        //Todo draw background
+        drawBackground(relX,relY);
+
         for (int i = 0; i < views.size(); i++) {
             final View v = views.get(i);
             if (HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h))
-                v.draw(batch, renderer, w, y);
+                v.draw(w, y);
         }
     }
 

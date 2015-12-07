@@ -2,7 +2,6 @@ package tbs.uilib.view;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import tbs.uilib.Drawable;
 import tbs.uilib.HUDManager;
@@ -61,7 +60,7 @@ public class TextView extends View {
         isHeightSetManually = true;
     }
 
-    public void setAutoHeight(boolean autoHeight){
+    public void setAutoHeight(boolean autoHeight) {
         isHeightSetManually = !autoHeight;
     }
 
@@ -130,8 +129,7 @@ public class TextView extends View {
         }
     }
 
-
-    protected void drawText(SpriteBatch batch, int relX, int relY) {
+    protected void drawText(final SpriteBatch batch, final float relX, final float relY) {
         for (int i = 0; i < textStrings.length; i++) {
             if (gravity == null)
                 gravity = Gravity.LEFT;
@@ -152,18 +150,21 @@ public class TextView extends View {
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(float relX, float relY) {
         lastRelX = relX;
         lastRelY = relY;
         if (!HUDManager.camera.isInFrustum(relX + x, relY + y, w, h))
             return;
+
+        drawBackground(relX,relY);
+        final SpriteBatch batch = getSpriteBatch(relX, relY);
         for (Drawable drawable : drawables) {
             if (w > 0 && h > 0) {
-                drawable.draw(batch, renderer, relX, relY);
+                batch.draw(drawable.sprite, relX, relY);
             }
         }
-        initBatch(batch, renderer);
-        drawText(batch, 0, 0);
+
+        drawText(batch, relX, relY);
     }
 
     public void setGravity(Gravity gravity) {

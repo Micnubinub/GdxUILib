@@ -1,10 +1,8 @@
 package tbs.uilib.view;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import tbs.uilib.Background;
 import tbs.uilib.Screen;
 import tbs.uilib.UniversalClickListener;
 import tbs.uilib.Values;
@@ -19,36 +17,18 @@ public class Dialog extends View {
     private static DialogListener listener;
     private static Texture dimmer;
 
-    static {
-        setDimPercentage(20);
-    }
-
     private boolean showDialog = false;
     //Todo somehow make it draw over other objects
     //Todo add dismiss on touch outside
     private int x, y;
+
     public Dialog(View view, int w, int h) {
         Dialog.view = view;
         setWidth(w);
         setHeight(h);
+        background = new Background(0x00000099, Background.Type.COLOR);
     }
 
-    public static void setDimPercentage(int percent) {
-        setDimBackground(percent > 4);
-
-        percent = percent < 0 ? 0 : percent;
-        percent = percent > 100 ? 100 : percent;
-
-        final Color dim = new Color(0, 0, 0, percent / 100f);
-        final Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(dim);
-        pixmap.fill();
-        dimmer = new Texture(pixmap);
-    }
-
-    public static void setDimBackground(boolean dimBackground) {
-        Dialog.dimBackground = dimBackground;
-    }
 
     @Override
     public void drag(int startX, int startY, int x, int y) {
@@ -70,20 +50,22 @@ public class Dialog extends View {
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
+    public void draw(float relX, float relY) {
+        lastRelX = relX;
+        lastRelY = relY;
         if (!showDialog)
             return;
         //Todo make sure its drawn in the center, with padding(add to the values you are meant to create in utility >utility.dialog_padding = 1...
         if (dimBackground)
-            batch.draw(dimmer, 0, 0, Screen.w, Screen.h);
+            drawBackground(relX, relY);
 
         if (view != null) {
-            view.draw(batch, renderer, x, y);
+            view.draw(x, y);
         }
     }
 
     @Override
-    public void setHeight(int h) {
+    public void setHeight(float h) {
         h = h < Values.DIALOG_PADDING ? Values.DIALOG_PADDING : h;
         final int diff = Screen.h - Values.DIALOG_PADDING - Values.DIALOG_PADDING;
         this.h = h > diff ? diff : h;
@@ -103,7 +85,7 @@ public class Dialog extends View {
 
 
     @Override
-    public void setWidth(int w) {
+    public void setWidth(float w) {
         w = w < Values.DIALOG_PADDING ? Values.DIALOG_PADDING : w;
         final int diff = Screen.w - Values.DIALOG_PADDING - Values.DIALOG_PADDING;
         this.w = w > diff ? diff : w;

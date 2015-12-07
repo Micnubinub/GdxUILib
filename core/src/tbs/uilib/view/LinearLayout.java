@@ -1,23 +1,23 @@
 package tbs.uilib.view;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
-import java.util.ArrayList;
+import tbs.uilib.UniversalClickListener;
 
 /**
  * Created by Michael on 3/10/2015.
  */
-public class LinearLayout extends View {
-
+public class LinearLayout extends ViewGroup {
     public static final int VERTICAL_LAYOUT = 0;
     public static final int HORIZONTAL_LAYOUT = 1;
-    protected final ArrayList<View> views = new ArrayList<View>();
     protected int layoutDirection;
+    private boolean resizeChildrenWhenParentResized;
 
+    public LinearLayout(boolean resizeChildrenWhenParentResized) {
+        this.resizeChildrenWhenParentResized = resizeChildrenWhenParentResized;
+    }
 
-    public float getH() {
-//Todo        switch (layoutDirection) {
+    @Override
+    public float getHeight() {
+        //Todo        switch (layoutDirection) {
 //            case VERTICAL:
 //                h = 0;
 //                for (int i = 0; i < views.size(); i++) {
@@ -31,17 +31,25 @@ public class LinearLayout extends View {
 //                }
 //                break;
 //        }
-        return h;
+        return super.getHeight();
     }
 
-    public void setH(int h) {
-        this.h = h;
+    public void setResizeChildrenWhenParentResized(boolean resizeChildrenWhenParentResized) {
+        this.resizeChildrenWhenParentResized = resizeChildrenWhenParentResized;
     }
 
+    public boolean isResizeChildrenWhenParentResized() {
+        return resizeChildrenWhenParentResized;
+    }
 
     @Override
     public void fling(float vx, float vy) {
 
+    }
+
+    @Override
+    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+        return super.checkCollision(touchType, xPos, yPos);
     }
 
     public void removeView(View view) {
@@ -54,7 +62,8 @@ public class LinearLayout extends View {
             views.clear();
     }
 
-    public float getW() {
+    @Override
+    public float getWidth() {
 
 //  TODO      switch (layoutDirection) {
 //            case HORIZONTAL:
@@ -73,14 +82,15 @@ public class LinearLayout extends View {
         return w;
     }
 
-    public void setW(int w) {
-        print("setW " + w);
+    @Override
+    public void setWidth(float w) {
         this.w = w;
 
-        for (int i = 0; i < views.size(); i++) {
-            final View v = views.get(i);
-            v.w = v.w > w ? w : v.w;
-        }
+        if (resizeChildrenWhenParentResized)
+            for (int i = 0; i < views.size(); i++) {
+                final View v = views.get(i);
+                v.w = v.w > w ? w : v.w;
+            }
     }
 
     @Override
@@ -89,17 +99,20 @@ public class LinearLayout extends View {
     }
 
     @Override
-    public void draw(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
-//Todo test        if (!HUDManager.camera.isInFrustum(relX + x, relY + y, w, h))
-//            return;
+    public void draw(float relX, float relY) {
         lastRelX = relX;
         lastRelY = relY;
+        drawBackground(relX, relY);
 
         int cumulative = 0;
+        final float viewTop = relY + y + h;
         for (int i = 0; i < views.size(); i++) {
+
             final View v = views.get(i);
-            v.draw(batch, renderer, relX + x, relY + y + cumulative);
+            if (resizeChildrenWhenParentResized)
+                v.w = v.w > w ? w : v.w;
             cumulative += v.h;
+            v.draw(relX + x, viewTop - cumulative);
         }
     }
 
@@ -108,21 +121,11 @@ public class LinearLayout extends View {
     }
 
     @Override
-    public void setHeight(int h) {
-        setH(h);
+    public void setSize(int w, int h) {
+        setWidth(w);
+        setHeight(h);
     }
 
-    @Override
-    public void setWidth(int w) {
-        setW(w);
-    }
-
-    public void addView(View view) {
-        if (view == null || views.contains(view))
-            return;
-
-        views.add(view);
-    }
 
     @Override
     public void dispose() {

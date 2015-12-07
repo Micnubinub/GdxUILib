@@ -1,8 +1,5 @@
 package tbs.uilib;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
 /**
  * Created by Michael on 2/26/2015.
  */
@@ -15,7 +12,7 @@ public interface Viewable {
 
     int getID();
 
-    void draw(final SpriteBatch batch, final ShapeRenderer renderer, final float relX, final float relY);
+    void draw(final float relX, final float relY);
 
     void dispose();
 }
