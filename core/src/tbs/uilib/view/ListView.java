@@ -61,7 +61,7 @@ public class ListView extends ScrollView {
 
         for (int i = 0; i < adapter.getCount(); i++) {
             final View v = adapter.getView(i);
-            if (checkCollision((int) v.x, (int) v.y, (int) v.w, (int) v.h) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
+            if (cullView(v.getViewBounds()) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
                 v.draw(relX, relY);
             }
         }

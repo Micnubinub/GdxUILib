@@ -30,7 +30,8 @@ public class Rect {
     }
 
     public boolean contains(Rect r) {
-        return contains(r.x, r.y, r.w, r.h);
+//        return contains(r.x, r.y, r.w, r.h);
+        return true;
     }
 
     @Override

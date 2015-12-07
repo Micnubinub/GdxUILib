@@ -115,12 +115,14 @@ public class LinearLayout extends ViewGroup {
         int cumulative = 0;
         final float viewTop = relY + y + h;
         for (int i = 0; i < views.size(); i++) {
-
             final View v = views.get(i);
             if (resizeChildrenWhenParentResized)
                 v.w = v.w > w ? w : v.w;
+
             cumulative += v.h;
-            v.draw(relX + x, viewTop - cumulative);
+
+            if (cullView(v.getViewBounds()))
+                v.draw(relX + x, viewTop - cumulative);
         }
     }
 

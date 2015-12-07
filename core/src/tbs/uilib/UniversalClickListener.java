@@ -102,7 +102,6 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        HUDManager.getHUDManager().drag(x, y, deltaX, deltaY);
         return false;
     }
 
@@ -168,7 +167,9 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+
         //Todo handle touch events here, have a boolean called touch intercepted
+        HUDManager.getHUDManager().drag(screenX, screenY, screenX - tDownX, screenY - tDownY);
 
         return false;
     }

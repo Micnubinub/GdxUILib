@@ -1,7 +1,5 @@
 package tbs.uilib.view;
 
-import java.util.ArrayList;
-
 import tbs.uilib.HUDManager;
 import tbs.uilib.UniversalClickListener;
 import tbs.uilib.ValueAnimator;
@@ -10,8 +8,6 @@ import tbs.uilib.ValueAnimator;
  * Created by Michael on 2/11/2015.
  */
 public class ScrollView extends LinearLayout {
-
-    public final ArrayList<View> views = new ArrayList<View>();
     protected int scrollX, scrollY, initScrollX, initScrollY;
     protected final ValueAnimator panAnimator = new ValueAnimator(ValueAnimator.Interpolator.DECELERATE, new ValueAnimator.UpdateListener() {
         @Override
@@ -76,16 +72,24 @@ public class ScrollView extends LinearLayout {
 
         int cumulative = 0;
         final float viewTop = relY + y + h;
-        for (int i = 0; i < views.size(); i++) {
 
+        for (int i = 0; i < views.size(); i++) {
             final View v = views.get(i);
             if (resizeChildrenWhenParentResized)
                 v.w = v.w > w ? w : v.w;
+
             cumulative += v.h;
-            v.draw(relX + x, viewTop - cumulative);
+
+            if (cullView(v.getViewBounds()))
+                v.draw(relX + x, viewTop - cumulative);
         }
     }
 
+    @Override
+    public void addView(View view) {
+        super.addView(view);
+        print("scrollView adding view > " + views.size());
+    }
 
     public int getScrollX() {
         return scrollX;
@@ -109,8 +113,11 @@ public class ScrollView extends LinearLayout {
         rect.set(lastRelX + x, lastRelY + y, w, h);
         if (rect.contains(startX, startY)) {
             //Todo pan animator
+
             scrollX += dx;
             scrollY += dy;
+
+            print("scrollViewDrag > " + scrollX + " , " + scrollY);
             return true;
         }
         return false;

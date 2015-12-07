@@ -2,6 +2,7 @@ package tbs.uilib.view;
 
 import java.util.ArrayList;
 
+import tbs.uilib.Rect;
 import tbs.uilib.UniversalClickListener;
 
 /**
@@ -20,6 +21,13 @@ public abstract class ViewGroup extends View {
             }
         }
         return super.checkCollision(touchType, xPos, yPos);
+    }
+
+    public boolean cullView(final Rect bounds) {
+        bounds.set(bounds.x + lastRelX, bounds.y + lastRelX, bounds.w, bounds.h);
+        rect2.set(lastRelX + x, lastRelY + y, w, h);
+        return rect2.contains(bounds);
+
     }
 
     public void addView(View view) {

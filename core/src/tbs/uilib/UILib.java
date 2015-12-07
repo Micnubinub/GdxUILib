@@ -11,11 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import java.util.Random;
 
 import tbs.uilib.view.Button;
-import tbs.uilib.view.LinearLayout;
+import tbs.uilib.view.ScrollView;
 import tbs.uilib.view.TextView;
 import tbs.uilib.view.View;
 
 public class UILib extends ApplicationAdapter {
+    public static int x, y;
     final Random rand = new Random();
     //Todo test clipping here
     //Todo test frustum in hudcam here
@@ -25,8 +26,6 @@ public class UILib extends ApplicationAdapter {
     OrthographicCamera camera;
     int w, h, imgW, imgH;
     long ticNano;
-    public static int x, y;
-
 
     @Override
     public void create() {
@@ -78,9 +77,9 @@ public class UILib extends ApplicationAdapter {
             }
         });
 
-        final LinearLayout linearLayout = new LinearLayout(true);
+        final ScrollView linearLayout = new ScrollView(true);
         linearLayout.setPosition(w / 6, h / 6);
-        linearLayout.setSize((4 * w) / 6, (4 * h) / 6);
+        linearLayout.setSize((4 * w) / 6, (h) / 3);
 
         linearLayout.setBackground(new Background(0xffbb00, Background.Type.COLOR));
         button.setBackground(new Background(0xf65b00, Background.Type.COLOR));

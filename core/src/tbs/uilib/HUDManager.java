@@ -231,15 +231,17 @@ public class HUDManager implements InteractiveObject, Viewable {
 
     @Override
     public boolean drag(float startX, float startY, float dx, float dy) {
+        continueCheckingForDrag = true;
         for (int i = (views.size() - 1); i >= 0; i--) {
             if (!continueCheckingForDrag) {
                 return true;
             }
             final View view = views.get(i);
-            print("checking for clicks on view" + i);
             if (view.getViewBounds().contains(startX, startY)) {
-                if (view.drag(startX, startY, dx, dy))
+                print("checking for drag on view dy>" + dy);
+                if (view.drag(startX, startY, dx, dy)) {
                     continueCheckingForDrag = false;
+                }
             }
         }
 
