@@ -111,6 +111,7 @@ public class ScrollView extends LinearLayout {
     @Override
     public boolean drag(float startX, float startY, float dx, float dy) {
         rect.set(lastRelX + x, lastRelY + y, w, h);
+        print("checking drag in scrollview > " + rect.toString() + " | > | " + startX + ", " + startY);
         if (rect.contains(startX, startY)) {
             //Todo pan animator
 

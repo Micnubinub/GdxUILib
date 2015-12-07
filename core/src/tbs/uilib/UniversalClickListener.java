@@ -21,6 +21,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     private static UniversalClickListener universalClickListener;
     private static InputMultiplexer multiplexer;
 
+
     private UniversalClickListener() {
         Utility.print("universal click listener declaration");
     }
@@ -167,9 +168,10 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-
         //Todo handle touch events here, have a boolean called touch intercepted
-        HUDManager.getHUDManager().drag(screenX, screenY, screenX - tDownX, screenY - tDownY);
+
+        screenY = Gdx.graphics.getHeight() - screenY;
+        HUDManager.getHUDManager().drag(tDownX, tDownY, screenX - tDownX, screenY - tDownY);
 
         return false;
     }

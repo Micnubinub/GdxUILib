@@ -2,6 +2,7 @@ package tbs.uilib;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -121,9 +122,14 @@ public class UILib extends ApplicationAdapter {
 //        Utility.drawCenteredText(batch, Color.WHITE,
 //                HUDManager.getHUDCamera().isInFrustum(x, y, imgW, imgH) ? "is in frus" : "out of frus", w / 2, h / 2, 0.3f);
 //        batch.draw(img, x, y, imgW, imgH);
+
         if (batch.isDrawing())
             batch.end();
 
+        if (!renderer.isDrawing())
+            renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.WHITE);
+//        renderer.circle(UniversalClickListener.startX, UniversalClickListener.startY, 29);
         if (renderer.isDrawing())
             renderer.end();
 

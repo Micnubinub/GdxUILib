@@ -15,7 +15,6 @@ public abstract class ViewGroup extends View {
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         for (int i = (views.size() - 1); i >= 0; i--) {
             final View view = views.get(i);
-            print("checking for clicks on view" + i);
             if (view.checkCollision(touchType, xPos, yPos)) {
                 return true;
             }
