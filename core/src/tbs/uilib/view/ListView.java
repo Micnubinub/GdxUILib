@@ -20,16 +20,15 @@ public class ListView extends ScrollView {
     }
 
     @Override
-    public void fling(float vx, float vy) {
-        final double vector = Math.sqrt((vx * vx) + (vy * vy));
-        final double vectorScreen = Math.sqrt((w * w) + (h * h));
-        UniversalClickListener.confirmFling();
-//   Todo     panAnimator.setDuration((vector / vectorScreen) * 250);
-//        panAnimator.start();
-        flingX = vx / 6;
-        flingY = vy / 6;
-        initCamXBeforeFling = x;
-        initCamYBeforeFling = y;
+    public boolean drag(float startX, float startY, float dx, float dy) {
+        rect.set(lastRelX + x, lastRelY + y, w, h);
+        if (rect.contains(startX, startY)) {
+            //Todo pan animator
+            scrollX += dx;
+            scrollY += dy;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class ListView extends ScrollView {
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
         panAnimator.update();
-        drawBackground(relX,relY);
+        drawBackground(relX, relY);
         if (adapter == null || adapter.getCount() < 1)
             return;
 

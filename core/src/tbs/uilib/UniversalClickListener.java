@@ -14,9 +14,8 @@ import tbs.uilib.view.View;
  */
 
 public class UniversalClickListener implements InputProcessor, GestureDetector.GestureListener {
-    public static boolean isTouchDownSinceLastPan, isInitialTouchHUD;
-    protected static int touchDownX1, touchDownY1;
-    protected static float initX, initY, flingX, flingY;
+    public static boolean isTouchDownSinceLastPan;
+    protected static float flingX, flingY;
     static float initZoom;
     static float tDownX, tDownY;
     private static UniversalClickListener universalClickListener;
@@ -50,9 +49,17 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
         isTouchDownSinceLastPan = false;
     }
 
+    public static float getInitialTouchDownX() {
+        return tDownX;
+    }
+
+    public static float getInitialTouchDownY() {
+        return tDownY;
+    }
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
+
         initZoom = initZoom < 1 ? 1 : initZoom;
         click(TouchType.TOUCH_DOWN, (int) x, (int) y);
         isTouchDownSinceLastPan = true;
@@ -95,6 +102,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+        HUDManager.getHUDManager().drag(x, y, deltaX, deltaY);
         return false;
     }
 

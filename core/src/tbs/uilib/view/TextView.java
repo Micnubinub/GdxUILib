@@ -14,13 +14,13 @@ import tbs.uilib.Utility;
 public class TextView extends View {
     //Todo make it so that the text view cuts off the drawing once the text drawing position exceeds the height.. ellipsize
     public int padding, maxNumLines;
+    public boolean isHeightSetManually;
     protected String text;
     protected float textScale = 0.2f, startingPoint;
     protected Color textColor = new Color(0xffffffff);
     protected float textHeight;
     protected String[] textStrings = {};
     protected Gravity gravity;
-    public boolean isHeightSetManually;
 
 
     public TextView(int w) {
@@ -41,11 +41,6 @@ public class TextView extends View {
         this.textColor = textColor;
         setText(text);
         this.w = w;
-    }
-
-    @Override
-    public void fling(float vx, float vy) {
-
     }
 
     @Override
@@ -96,10 +91,6 @@ public class TextView extends View {
         getTextStrings();
     }
 
-    @Override
-    public void drag(int startX, int startY, int x, int y) {
-
-    }
 
     public void getTextStrings() {
         if (text == null || text.length() < 1)
@@ -170,14 +161,6 @@ public class TextView extends View {
     public void setGravity(Gravity gravity) {
         this.gravity = gravity;
         getTextStrings();
-    }
-
-    public float getW() {
-        return w;
-    }
-
-    public float getH() {
-        return h;
     }
 
     @Override

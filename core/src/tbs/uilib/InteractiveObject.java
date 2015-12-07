@@ -12,7 +12,7 @@ public interface InteractiveObject {
 
     boolean checkCollision(int xPos, int yPos, int width, int height);
 
-    void drag(int startX, int startY, int x, int y);
+    boolean drag(float startX, float startY, float dx, float dy);
 
-    void fling(float vx, float vy);
+    boolean fling(float vx, float vy);
 }

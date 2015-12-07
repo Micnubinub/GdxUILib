@@ -49,16 +49,6 @@ public class ProgressBar extends View {
     }
 
     @Override
-    public void drag(int startX, int startY, int x, int y) {
-
-    }
-
-    @Override
-    public void fling(float vx, float vy) {
-
-    }
-
-    @Override
     public void dispose() {
 
     }

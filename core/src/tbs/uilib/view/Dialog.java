@@ -22,7 +22,7 @@ public class Dialog extends View {
     //Todo add dismiss on touch outside
     private int x, y;
 
-    public Dialog(View view, int w, int h) {
+    public Dialog(ViewGroup view, int w, int h) {
         Dialog.view = view;
         setWidth(w);
         setHeight(h);
@@ -31,18 +31,18 @@ public class Dialog extends View {
 
 
     @Override
-    public void drag(int startX, int startY, int x, int y) {
-
-    }
-
-    @Override
     public void dispose() {
         //Todo fill in
     }
 
     @Override
-    public void fling(float vx, float vy) {
-        view.fling(vx, vy);
+    public boolean drag(float startX, float startY, float dx, float dy) {
+        return view.drag(startX, startY, dx, dy);
+    }
+
+    @Override
+    public boolean fling(float vx, float vy) {
+        return view.fling(vx, vy);
     }
 
     public void setDialogListener(DialogListener listener) {

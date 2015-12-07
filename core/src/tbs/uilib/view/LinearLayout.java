@@ -9,7 +9,7 @@ public class LinearLayout extends ViewGroup {
     public static final int VERTICAL_LAYOUT = 0;
     public static final int HORIZONTAL_LAYOUT = 1;
     protected int layoutDirection;
-    private boolean resizeChildrenWhenParentResized;
+    protected boolean resizeChildrenWhenParentResized;
 
     public LinearLayout(boolean resizeChildrenWhenParentResized) {
         this.resizeChildrenWhenParentResized = resizeChildrenWhenParentResized;
@@ -34,17 +34,21 @@ public class LinearLayout extends ViewGroup {
         return super.getHeight();
     }
 
-    public void setResizeChildrenWhenParentResized(boolean resizeChildrenWhenParentResized) {
-        this.resizeChildrenWhenParentResized = resizeChildrenWhenParentResized;
-    }
-
     public boolean isResizeChildrenWhenParentResized() {
         return resizeChildrenWhenParentResized;
     }
 
-    @Override
-    public void fling(float vx, float vy) {
+    public void setResizeChildrenWhenParentResized(boolean resizeChildrenWhenParentResized) {
+        this.resizeChildrenWhenParentResized = resizeChildrenWhenParentResized;
+    }
 
+    @Override
+    public boolean fling(float vx, float vy) {
+//        rect.set(lastRelX + x, lastRelY + y, w, h);
+//        if (rect.contains(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY())) {
+//            //Todo pan animator
+//        }
+        return false;
     }
 
     @Override
@@ -94,8 +98,12 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override
-    public void drag(int startX, int startY, int x, int y) {
-
+    public boolean drag(float startX, float startY, float dx, float dy) {
+//        rect.set(lastRelX + x, lastRelY + y, w, h);
+//        if (rect.contains(x, y)) {
+//            //Todo pan animator
+//        }
+        return false;
     }
 
     @Override

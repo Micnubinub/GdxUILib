@@ -2,7 +2,6 @@ package tbs.uilib.view;
 
 import java.util.ArrayList;
 
-import tbs.uilib.HUDManager;
 import tbs.uilib.UniversalClickListener;
 
 /**
@@ -18,7 +17,6 @@ public abstract class ViewGroup extends View {
             print("checking for clicks on view" + i);
             if (view.checkCollision(touchType, xPos, yPos)) {
                 return true;
-                //Todo UniversalClickListener.handleClick(x,y,);
             }
         }
         return super.checkCollision(touchType, xPos, yPos);

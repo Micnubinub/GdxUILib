@@ -23,9 +23,9 @@ import tbs.uilib.Viewable;
  */
 public abstract class View implements InteractiveObject, Viewable {
     public static final Color color = new Color();
+    public static final Rectangle scissors = new Rectangle(), clipBounds = new Rectangle();
     //Todo implement some kind of wrapContent, and fill parent
     public State state = State.TOUCH_UP;
-    public static final Rectangle scissors = new Rectangle(), clipBounds = new Rectangle();
     public float x, y, w, h, initCamXBeforeFling, initCamYBeforeFling;
     public ArrayList<Drawable> drawables = new ArrayList<Drawable>();
     public OnClickListener onClickListener;
@@ -74,6 +74,10 @@ public abstract class View implements InteractiveObject, Viewable {
         return renderer;
     }
 
+    @Override
+    public boolean fling(float vx, float vy) {
+        return false;
+    }
 
     public final SpriteBatch initSpriteBatch(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
         if (renderer.isDrawing())
@@ -120,7 +124,6 @@ public abstract class View implements InteractiveObject, Viewable {
         if (state == State.DISABLED || ((touchType != UniversalClickListener.TouchType.CLICK) && (onTouchListener == null)))
             return false;
         rect.set(lastRelX + x, lastRelY + y, w, h);
-        print("checking click > " + rect.toString());
         final boolean clicked = rect.contains(xPos, yPos);
 
         if (clicked && !(state == State.DISABLED)) {
@@ -157,14 +160,6 @@ public abstract class View implements InteractiveObject, Viewable {
         rect.set(x, y, w, h);
         rect2.set(xPos, yPos, width, height);
         return rect.contains(rect2);
-    }
-
-    public void setHeight(float h) {
-        this.h = h;
-    }
-
-    public void setWidth(float w) {
-        this.w = w;
     }
 
     public State getState() {
@@ -234,12 +229,25 @@ public abstract class View implements InteractiveObject, Viewable {
         return rect;
     }
 
+    @Override
+    public boolean drag(float startX, float startY, float dx, float dy) {
+        return false;
+    }
+
     public float getWidth() {
         return w;
     }
 
+    public void setWidth(float w) {
+        this.w = w;
+    }
+
     public float getHeight() {
         return h;
+    }
+
+    public void setHeight(float h) {
+        this.h = h;
     }
 
     @Override

@@ -3,6 +3,7 @@ package tbs.uilib.view;
 import java.util.ArrayList;
 
 import tbs.uilib.HUDManager;
+import tbs.uilib.UniversalClickListener;
 import tbs.uilib.ValueAnimator;
 
 /**
@@ -62,6 +63,7 @@ public class ScrollView extends LinearLayout {
         //Todo fill in
     }
 
+
     @Override
     public void draw(float relX, float relY) {
         panAnimator.update();
@@ -70,12 +72,17 @@ public class ScrollView extends LinearLayout {
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
 
-        drawBackground(relX,relY);
+        drawBackground(relX, relY);
 
+        int cumulative = 0;
+        final float viewTop = relY + y + h;
         for (int i = 0; i < views.size(); i++) {
+
             final View v = views.get(i);
-            if (HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h))
-                v.draw(w, y);
+            if (resizeChildrenWhenParentResized)
+                v.w = v.w > w ? w : v.w;
+            cumulative += v.h;
+            v.draw(relX + x, viewTop - cumulative);
         }
     }
 
@@ -96,26 +103,37 @@ public class ScrollView extends LinearLayout {
         this.scrollY = scrollY;
     }
 
+
     @Override
-    public void drag(int startX, int startY, int x, int y) {
-//Todo setScroll
+    public boolean drag(float startX, float startY, float dx, float dy) {
+        rect.set(lastRelX + x, lastRelY + y, w, h);
+        if (rect.contains(startX, startY)) {
+            //Todo pan animator
+            scrollX += dx;
+            scrollY += dy;
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void fling(float vx, float vy) {
-        if (!HUDManager.isContinueCheckingClicks())
-            return;
+    public boolean fling(float vx, float vy) {
+        rect.set(lastRelX + x, lastRelY + y, w, h);
+        if (rect.contains(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY())) {
+            //Todo pan animator
+            HUDManager.setContinueCheckingClicks(false);
+            final double vector = Math.sqrt((vx * vx) + (vy * vy));
+            final double vectorScreen = Math.sqrt((w * w) + (h * h));
+            panAnimator.setUpdateListener(flingListener);
+            panAnimator.setDuration((vector / vectorScreen) * 250);
+            panAnimator.start();
+            flingX = vx / 6;
+            flingY = vy / 6;
+            initScrollX = scrollX;
+            initScrollY = scrollY;
+        }
 
-        HUDManager.setContinueCheckingClicks(false);
-        final double vector = Math.sqrt((vx * vx) + (vy * vy));
-        final double vectorScreen = Math.sqrt((w * w) + (h * h));
-        panAnimator.setUpdateListener(flingListener);
-        panAnimator.setDuration((vector / vectorScreen) * 250);
-        panAnimator.start();
-        flingX = vx / 6;
-        flingY = vy / 6;
-        initScrollX = scrollX;
-        initScrollY = scrollY;
+        return false;
     }
 
     @Override

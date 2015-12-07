@@ -23,6 +23,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     private static Matrix4 proj;
     private static ShapeRenderer shapeRenderer;
     private static SpriteBatch spriteBatch;
+    private static boolean continueCheckingForDrag;
 
     private HUDManager() {
         if (hudManager == null) {
@@ -37,6 +38,14 @@ public class HUDManager implements InteractiveObject, Viewable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static boolean isContinueCheckingForDrag() {
+        return continueCheckingForDrag;
+    }
+
+    public static void setContinueCheckingForDrag(boolean continueCheckingForDrag) {
+        HUDManager.continueCheckingForDrag = continueCheckingForDrag;
     }
 
     public static ShapeRenderer getShapeRenderer() {
@@ -80,11 +89,6 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
     }
 
-    @Override
-    public void draw(float relX, float relY) {
-
-    }
-
     public static boolean isContinueCheckingForFling() {
         return continueCheckingForFling;
     }
@@ -112,8 +116,12 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     @Override
+    public void draw(float relX, float relY) {
+
+    }
+
+    @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
-        print("checking for clicks > " + touchType);
         continueCheckingClicks = true;
         switch (touchType) {
             case CLICK:
@@ -141,13 +149,17 @@ public class HUDManager implements InteractiveObject, Viewable {
 
 
     @Override
-    public void fling(float vx, float vy) {
+    public boolean fling(float vx, float vy) {
         continueCheckingForFling = true;
         for (View view : views) {
             if (continueCheckingClicks)
                 view.fling(vx, vy);
         }
+
+
+        return false;
     }
+
 
     @Override
     public boolean checkCollision(int xPos, int yPos, int width, int height) {
@@ -207,7 +219,9 @@ public class HUDManager implements InteractiveObject, Viewable {
         if (renderer.isDrawing())
             renderer.end();
         try {
-            ScissorStack.popScissors();} catch (Exception e) {}
+            ScissorStack.popScissors();
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -216,7 +230,20 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     @Override
-    public void drag(int startX, int startY, int x, int y) {
+    public boolean drag(float startX, float startY, float dx, float dy) {
+        for (int i = (views.size() - 1); i >= 0; i--) {
+            if (!continueCheckingForDrag) {
+                return true;
+            }
+            final View view = views.get(i);
+            print("checking for clicks on view" + i);
+            if (view.getViewBounds().contains(startX, startY)) {
+                if (view.drag(startX, startY, dx, dy))
+                    continueCheckingForDrag = false;
+            }
+        }
+
+        return false;
     }
 
     public void setTouchDown(int x, int y) {

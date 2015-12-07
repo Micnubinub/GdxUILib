@@ -29,15 +29,7 @@ public class Button extends View {
         this.textColor = textColor;
     }
 
-    @Override
-    public void fling(float vx, float vy) {
 
-    }
-
-    @Override
-    public void drag(int startX, int startY, int x, int y) {
-
-    }
 
     @Override
     public void draw(float relX, float relY) {
