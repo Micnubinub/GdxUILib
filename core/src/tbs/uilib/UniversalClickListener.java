@@ -15,23 +15,22 @@ import tbs.uilib.view.View;
 
 public class UniversalClickListener implements InputProcessor, GestureDetector.GestureListener {
     public static boolean isTouchDownSinceLastPan;
+    public static boolean shouldFlingHorizontally, shouldFlingVertically;
     protected static float flingX, flingY;
     static float initZoom;
     static float tDownX, tDownY;
+    private static int w, h;
     private static UniversalClickListener universalClickListener;
-    private static InputMultiplexer multiplexer;
-
 
     private UniversalClickListener() {
-        Utility.print("universal click listener declaration");
     }
 
     public static UniversalClickListener getUniversalClickListener() {
-        Utility.print("universal click listener init");
         if (universalClickListener == null) {
             universalClickListener = new UniversalClickListener();
-            multiplexer = new InputMultiplexer(universalClickListener, new GestureDetector(universalClickListener));
-            Gdx.input.setInputProcessor(multiplexer);
+            Gdx.input.setInputProcessor(new InputMultiplexer(universalClickListener, new GestureDetector(universalClickListener)));
+            w = Gdx.graphics.getWidth();
+            h = Gdx.graphics.getHeight();
         }
 
         return universalClickListener;
@@ -66,7 +65,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
         isTouchDownSinceLastPan = true;
 //Todo        initZoom = camera.getZoom();
         tDownX = x;
-        tDownY = y;
+        tDownY = h - y;
         return false;
     }
 
@@ -86,7 +85,6 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        HUDManager.getHUDManager().fling(flingX, flingY);
         print("fling > " + velocityX + ", " + velocityY);
 
 //        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
@@ -98,12 +96,14 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 //        flingY = velocityY / 6;
 //        initCamXBeforeFling = camera.position.x;
 //        initCamYBeforeFling = camera.position.y;
-        return false;
+        return HUDManager.getHUDManager().fling(flingX, flingY);
     }
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        return false;
+        shouldFlingHorizontally = deltaX != 0;
+        shouldFlingVertically = deltaY != 0;
+        return HUDManager.getHUDManager().drag(tDownX, tDownY, deltaX, deltaY);
     }
 
     @Override
@@ -157,22 +157,21 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        tDownX = screenX;
+        tDownY = h - screenY;
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-//        click(TouchType.TOUCH_UP, screenX, screenY);
+        click(TouchType.TOUCH_UP, screenX, screenY);
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         //Todo handle touch events here, have a boolean called touch intercepted
-
-        screenY = Gdx.graphics.getHeight() - screenY;
-        HUDManager.getHUDManager().drag(tDownX, tDownY, screenX - tDownX, screenY - tDownY);
-
+//        return HUDManager.getHUDManager().drag(tDownX, tDownY, screenX - tDownX, screenY - tDownY);
         return false;
     }
 

@@ -32,7 +32,6 @@ public abstract class ViewGroup extends View {
     public void addView(View view) {
         if (view == null || views.contains(view))
             return;
-        print("adding view> " + views.size());
         views.add(view);
     }
 

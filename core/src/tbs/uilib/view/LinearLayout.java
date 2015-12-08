@@ -31,7 +31,7 @@ public class LinearLayout extends ViewGroup {
 //                }
 //                break;
 //        }
-        return super.getHeight();
+        return h;
     }
 
     public boolean isResizeChildrenWhenParentResized() {

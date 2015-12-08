@@ -34,8 +34,9 @@ public class ScrollView extends LinearLayout {
         @Override
         public void update(double animatedValue) {
             if (!isTouchDownSinceLastPan) {
-                setScrollY(Math.round((float) (initScrollY + (animatedValue * flingY))));
-                setScrollX(Math.round((float) (initScrollX - (animatedValue * flingX))));
+                //Todo
+//                setScrollY(Math.round((float) (initScrollY + (animatedValue * flingY))));
+//                setScrollX(Math.round((float) (initScrollX - (animatedValue * flingX))));
             }
         }
 
@@ -59,7 +60,6 @@ public class ScrollView extends LinearLayout {
         //Todo fill in
     }
 
-
     @Override
     public void draw(float relX, float relY) {
         panAnimator.update();
@@ -79,16 +79,12 @@ public class ScrollView extends LinearLayout {
                 v.w = v.w > w ? w : v.w;
 
             cumulative += v.h;
+//            v.x += scrollX;
+//            v.y -= scrollY;
 
             if (cullView(v.getViewBounds()))
-                v.draw(relX + x, viewTop - cumulative);
+                v.draw(relX + x + scrollX, viewTop - cumulative - scrollY);
         }
-    }
-
-    @Override
-    public void addView(View view) {
-        super.addView(view);
-        print("scrollView adding view > " + views.size());
     }
 
     public int getScrollX() {
@@ -107,18 +103,13 @@ public class ScrollView extends LinearLayout {
         this.scrollY = scrollY;
     }
 
-
     @Override
     public boolean drag(float startX, float startY, float dx, float dy) {
         rect.set(lastRelX + x, lastRelY + y, w, h);
-        print("checking drag in scrollview > " + rect.toString() + " | > | " + startX + ", " + startY);
         if (rect.contains(startX, startY)) {
             //Todo pan animator
-
             scrollX += dx;
             scrollY += dy;
-
-            print("scrollViewDrag > " + scrollX + " , " + scrollY);
             return true;
         }
         return false;
@@ -140,7 +131,6 @@ public class ScrollView extends LinearLayout {
             initScrollX = scrollX;
             initScrollY = scrollY;
         }
-
         return false;
     }
 

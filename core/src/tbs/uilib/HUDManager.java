@@ -130,7 +130,6 @@ public class HUDManager implements InteractiveObject, Viewable {
                         return true;
                     }
                     final View view = views.get(i);
-                    print("checking for clicks on view" + i);
                     if (view.checkCollision(touchType, xPos, yPos)) {
                         continueCheckingClicks = false;
                         //Todo UniversalClickListener.handleClick(x,y,);
@@ -211,17 +210,28 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
 
         Utility.drawCenteredText(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps", Color.WHITE, 0.25f, 1800, 60);
-        batch.setProjectionMatrix(proj);
 
-        if (batch.isDrawing())
+        if (batch.isDrawing()) {
             batch.end();
+        }
 
-        if (renderer.isDrawing())
+        if (renderer.isDrawing()) {
             renderer.end();
+        }
         try {
             ScissorStack.popScissors();
         } catch (Exception e) {
         }
+
+//        renderer.begin(ShapeRenderer.ShapeType.Filled);
+//        renderer.setColor(Color.RED);
+//        renderer.circle(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY(), 39);
+        if (renderer.isDrawing()) {
+            renderer.end();
+        }
+
+        batch.setProjectionMatrix(proj);
+        renderer.setProjectionMatrix(proj);
     }
 
     @Override

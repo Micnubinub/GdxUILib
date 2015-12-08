@@ -35,6 +35,7 @@ public class UILib extends ApplicationAdapter {
 //        img = new Texture("badlogic.jpg");
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
+        Utility.print("w > " + w + " , h > " + h);
         x = rand.nextInt(w);
         y = rand.nextInt(h);
         camera = new OrthographicCamera(w, h);
@@ -129,7 +130,8 @@ public class UILib extends ApplicationAdapter {
         if (!renderer.isDrawing())
             renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.WHITE);
-//        renderer.circle(UniversalClickListener.startX, UniversalClickListener.startY, 29);
+        renderer.rect(0, (h / 2) - 2, w, 4);
+//        renderer.circle(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY(), 29);
         if (renderer.isDrawing())
             renderer.end();
 
