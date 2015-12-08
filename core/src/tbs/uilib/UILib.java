@@ -24,7 +24,7 @@ public class UILib extends ApplicationAdapter {
     SpriteBatch batch;
     ShapeRenderer renderer;
     Rectangle scissors = new Rectangle(), clipBounds;
-    Rect container = new Rect(250, 250, 250, 250), mover = new Rect(0, 0, 75, 75);
+    //    Rect container = new Rect(250, 250, 250, 250), mover = new Rect(0, 0, 75, 75);
     OrthographicCamera camera;
     int w, h, imgW, imgH;
     long ticNano;
@@ -61,6 +61,7 @@ public class UILib extends ApplicationAdapter {
         button.setSize(w / 5, w / 9);
         final Button button1 = new Button("Button1");
         button1.setSize(w / 5, w / 9);
+        button1.debugDraw = true;
 
         final Button button5 = new Button("Mike5");
         button5.setSize(w / 5, w / 9);
@@ -133,14 +134,14 @@ public class UILib extends ApplicationAdapter {
             renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.WHITE);
         renderer.rect(0, (h / 2) - 2, w, 4);
-        mover.x = x;
-        mover.y = y;
-
-        renderer.setColor(Color.NAVY);
-        renderer.rect(container.x, container.y, container.w, container.h);
-
-        renderer.setColor(container.contains(mover) ? Color.GREEN : Color.RED);
-        renderer.rect(mover.x, mover.y, mover.w, mover.h);
+//        mover.x = x;
+//        mover.y = y;
+//
+//        renderer.setColor(Color.NAVY);
+//        renderer.rect(container.x, container.y, container.w, container.h);
+//
+//        renderer.setColor(container.contains(mover) ? Color.GREEN : Color.RED);
+//        renderer.rect(mover.x, mover.y, mover.w, mover.h);
 
 //        renderer.circle(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY(), 29);
         if (renderer.isDrawing())

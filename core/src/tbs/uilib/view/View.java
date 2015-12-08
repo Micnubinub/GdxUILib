@@ -31,6 +31,8 @@ public abstract class View implements InteractiveObject, Viewable {
     public OnTouchListener onTouchListener;
     public Object tag;
     public Background background;
+    //Todo tmp
+    public boolean debugDraw;
     protected float lastRelX, lastRelY;
     protected int id;
 
@@ -75,6 +77,8 @@ public abstract class View implements InteractiveObject, Viewable {
 
     @Override
     public boolean fling(float vx, float vy) {
+        print("fling view > " + vx + ", " + vy);
+
         return false;
     }
 
@@ -225,6 +229,8 @@ public abstract class View implements InteractiveObject, Viewable {
 
     public Rect getViewBounds() {
         rect.set(lastRelX + x, lastRelY + y, w, h);
+//        if (debugDraw)
+//            print("getViewBounds > " + rect.toString());
         return rect;
     }
 
@@ -263,10 +269,13 @@ public abstract class View implements InteractiveObject, Viewable {
 
     public void setLastRelX(float lastRelX) {
         this.lastRelX = lastRelX;
+//        print("debugDraw > "+ debugDraw + " | setLRX > "+lastRelX);
     }
 
     public void setLastRelY(float lastRelY) {
         this.lastRelY = lastRelY;
+//        print("debugDraw > "+ debugDraw + " | setLRY > "+lastRelY);
+
     }
 
     public interface OnClickListener {

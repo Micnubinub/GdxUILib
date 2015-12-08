@@ -1,7 +1,6 @@
 package tbs.uilib;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -149,13 +148,13 @@ public class HUDManager implements InteractiveObject, Viewable {
 
     @Override
     public boolean fling(float vx, float vy) {
+
         continueCheckingForFling = true;
         for (View view : views) {
             if (continueCheckingClicks)
-                view.fling(vx, vy);
+                if (view.fling(vx, vy))
+                    return true;
         }
-
-
         return false;
     }
 
@@ -209,7 +208,13 @@ public class HUDManager implements InteractiveObject, Viewable {
             views.get(i).draw(0, 0);
         }
 
-        Utility.drawCenteredText(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps", Color.WHITE, 0.25f, 1800, 60);
+        if (renderer.isDrawing())
+            renderer.end();
+
+        if (!batch.isDrawing())
+            batch.begin();
+
+//        Utility.drawCenteredText(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps", Color.WHITE, Gdx.graphics.getWidth() / 9, Gdx.graphics.getWidth() / 9, 0.25f);
 
         if (batch.isDrawing()) {
             batch.end();

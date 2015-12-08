@@ -1,18 +1,17 @@
 package tbs.uilib;
 
 
-
 /**
  * Created by root on 4/11/14.
  */
 public class ValueAnimator {
+    public double duration = 1200;
     //Todo fix this
     private Interpolator interpolator = Interpolator.LINEAR;
     private boolean running, autoRemove = true;
     private double animated_value = 1;
     private UpdateListener updateListener;
     private long startTime = System.currentTimeMillis();
-    private double duration = 1200;
 
 
     public ValueAnimator() {
@@ -130,6 +129,7 @@ public class ValueAnimator {
 
     public void setDuration(double duration) {
         this.duration = duration;
+        Utility.print("setDuration>" + duration);
     }
 
     public enum Interpolator {

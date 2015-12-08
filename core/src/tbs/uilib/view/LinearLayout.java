@@ -43,15 +43,6 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override
-    public boolean fling(float vx, float vy) {
-//        rect.set(lastRelX + x, lastRelY + y, width, height);
-//        if (rect.contains(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY())) {
-//            //Todo pan animator
-//        }
-        return false;
-    }
-
-    @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         return super.checkCollision(touchType, xPos, yPos);
     }
@@ -106,6 +97,7 @@ public class LinearLayout extends ViewGroup {
         return false;
     }
 
+
     @Override
     public void draw(float relX, float relY) {
         lastRelX = relX;
@@ -120,6 +112,8 @@ public class LinearLayout extends ViewGroup {
                 v.w = v.w > w ? w : v.w;
 
             cumulative += v.h;
+            v.setLastRelX(relX + x);
+            v.setLastRelY(viewTop - cumulative);
 
             if (cullView(v))
                 v.draw(relX + x, viewTop - cumulative);

@@ -1,7 +1,13 @@
 package tbs.uilib.view;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+
 import java.util.ArrayList;
 
+import tbs.uilib.HUDManager;
 import tbs.uilib.UniversalClickListener;
 
 /**
@@ -27,10 +33,53 @@ public abstract class ViewGroup extends View {
         if (rect2.contains(v.getViewBounds())) {
             return true;
         } else {
-            v.setLastRelX(lastRelX);
-            v.setLastRelY(lastRelY);
+            v.setLastRelX(lastRelX + x);
+            v.setLastRelY(lastRelY + y);
         }
+
         return false;
+    }
+
+    public void drawDebug(View v) {
+        if (v.debugDraw) {
+            final ShapeRenderer renderer = HUDManager.getShapeRenderer();
+            final SpriteBatch batch = HUDManager.getSpriteBatch();
+            if (batch.isDrawing())
+                try {
+                    try {
+                        batch.end();
+                    } catch (Exception e) {
+                    }
+                    try {
+                        ScissorStack.popScissors();
+                    } catch (Exception e) {
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            if (!renderer.isDrawing()) {
+                try {
+                    renderer.begin(ShapeRenderer.ShapeType.Filled);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    renderer.flush();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    ScissorStack.popScissors();
+                } catch (Exception e) {
+                }
+            }
+
+
+            renderer.setColor(Color.BROWN);
+            renderer.rect(rect.x, rect.y, rect.w, rect.h);
+        }
     }
 
     public void addView(View view) {

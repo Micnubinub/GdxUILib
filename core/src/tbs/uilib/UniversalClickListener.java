@@ -97,14 +97,13 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 //        flingY = velocityY / 6;
 //        initCamXBeforeFling = camera.position.x;
 //        initCamYBeforeFling = camera.position.y;
-        return HUDManager.getHUDManager().fling(flingX, flingY);
+        return HUDManager.getHUDManager().fling(velocityX, velocityY);
     }
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         shouldFlingHorizontally = deltaX != 0;
         shouldFlingVertically = deltaY != 0;
-        print("dx > " + deltaX + " , " + "dy > " + deltaY);
         return HUDManager.getHUDManager().drag(tDownX, tDownY, deltaX, deltaY);
     }
 

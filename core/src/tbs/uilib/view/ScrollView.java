@@ -35,14 +35,15 @@ public class ScrollView extends LinearLayout {
         public void update(double animatedValue) {
             if (!isTouchDownSinceLastPan) {
                 //Todo
-//                setScrollY(Math.round((float) (initScrollY + (animatedValue * flingY))));
-//                setScrollX(Math.round((float) (initScrollX - (animatedValue * flingX))));
+                setScrollX(Math.round((float) (initScrollX + (animatedValue * flingX))));
+                setScrollY(Math.round((float) (initScrollY + (animatedValue * flingY))));
             }
         }
 
         @Override
         public void onAnimationStart() {
-
+            initScrollX = scrollX;
+            initScrollY = scrollY;
         }
 
         @Override
@@ -81,6 +82,8 @@ public class ScrollView extends LinearLayout {
             cumulative += v.h;
 //            v.x += scrollX;
 //            v.y -= scrollY;
+            v.setLastRelX(relX + x + scrollX);
+            v.setLastRelY(viewTop - cumulative - scrollY);
 
             if (cullView(v))
                 v.draw(relX + x + scrollX, viewTop - cumulative - scrollY);
@@ -102,6 +105,7 @@ public class ScrollView extends LinearLayout {
     }
 
     public void setScrollY(int scrollY) {
+        print("setCrollY>" + scrollY);
         this.scrollY = scrollY;
     }
 
@@ -120,16 +124,21 @@ public class ScrollView extends LinearLayout {
     @Override
     public boolean fling(float vx, float vy) {
         rect.set(lastRelX + x, lastRelY + y, w, h);
+        print("fling sv > " + vx + ", " + vy);
+
         if (rect.contains(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY())) {
             //Todo pan animator
             HUDManager.setContinueCheckingClicks(false);
             final double vector = Math.sqrt((vx * vx) + (vy * vy));
+            print("vector > " + vector);
             final double vectorScreen = Math.sqrt((w * w) + (h * h));
-            panAnimator.setUpdateListener(flingListener);
             panAnimator.setDuration((vector / vectorScreen) * 250);
-            panAnimator.start();
-            flingX = vx / 6;
-            flingY = vy / 6;
+            if (panAnimator.duration > 65) {
+                panAnimator.setUpdateListener(flingListener);
+                panAnimator.start();
+                flingX = vx / 6;
+                flingY = vy / 6;
+            }
             initScrollX = scrollX;
             initScrollY = scrollY;
         }
