@@ -21,8 +21,8 @@ import java.util.Random;
  */
 public class Utility {
     public static final Random rand = new Random();
-    private static final int[] ints = new int[2];
     public static final GlyphLayout layout = new GlyphLayout();
+    private static final int[] ints = new int[2];
     private static boolean isFontInit;
     private static BitmapFont font;
 
@@ -278,7 +278,7 @@ public class Utility {
 
     public static void drawWithClippping(OrthographicCamera camera, SpriteBatch batch) {
         Rectangle scissors = new Rectangle();
-//        Rectangle clipBounds = new Rectangle(x, y, w, h);
+//        Rectangle clipBounds = new Rectangle(x, y, width, height);
 
 //        ScissorStack.calculateScissors(camera, batch.getTransformMatrix(), clipBounds, scissors);
         ScissorStack.pushScissors(scissors);

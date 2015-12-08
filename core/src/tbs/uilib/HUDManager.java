@@ -250,7 +250,6 @@ public class HUDManager implements InteractiveObject, Viewable {
 //                print("checking for drag on view dy>" + dy);
             if (view.drag(startX, startY, dx, dy)) {
                 continueCheckingForDrag = false;
-                print("dragging > " + dy);
             }
         }
 
@@ -293,7 +292,7 @@ public class HUDManager implements InteractiveObject, Viewable {
 
         public boolean isInFrustum(float x, float y, float w, float h) {
 //            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
-//            r2.set(camera.position.x + x, camera.position.y + y, w, h);
+//            r2.set(camera.position.x + x, camera.position.y + y, width, height);
 //            return r1.contains(r2);
             return true;
         }

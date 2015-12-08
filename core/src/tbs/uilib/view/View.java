@@ -3,7 +3,6 @@ package tbs.uilib.view;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import tbs.uilib.Viewable;
  */
 public abstract class View implements InteractiveObject, Viewable {
     public static final Color color = new Color();
-    public static final Rectangle scissors = new Rectangle(), clipBounds = new Rectangle();
+    public static final com.badlogic.gdx.math.Rectangle scissors = new com.badlogic.gdx.math.Rectangle(), clipBounds = new com.badlogic.gdx.math.Rectangle();
     //Todo implement some kind of wrapContent, and fill parent
     public State state = State.TOUCH_UP;
     public float x, y, w, h;

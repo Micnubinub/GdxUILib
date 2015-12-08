@@ -28,7 +28,7 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
      linux/ios chmod 755 gradlew
      packaging ios version>> gradlew ios:createIPA
      packaging web version>> gradlew html:dist
-     TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(colorTexture, x, y, w, h)
+     TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(colorTexture, x, y, width, height)
      bring for the following classes > Screen, Utility*/
 
     private static final ArrayList<ValueAnimator> animations = new ArrayList<ValueAnimator>(10);

@@ -19,15 +19,15 @@ public class LinearLayout extends ViewGroup {
     public float getHeight() {
         //Todo        switch (layoutDirection) {
 //            case VERTICAL:
-//                h = 0;
+//                height = 0;
 //                for (int i = 0; i < views.size(); i++) {
-//                    h += views.get(i).h;
+//                    height += views.get(i).height;
 //                }
 //                break;
 //            case HORIZONTAL:
-//                h = views.get(0).h;
+//                height = views.get(0).height;
 //                for (int i = 1; i < views.size(); i++) {
-//                    h = Math.max(h, views.get(i).h);
+//                    height = Math.max(height, views.get(i).height);
 //                }
 //                break;
 //        }
@@ -44,7 +44,7 @@ public class LinearLayout extends ViewGroup {
 
     @Override
     public boolean fling(float vx, float vy) {
-//        rect.set(lastRelX + x, lastRelY + y, w, h);
+//        rect.set(lastRelX + x, lastRelY + y, width, height);
 //        if (rect.contains(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY())) {
 //            //Todo pan animator
 //        }
@@ -71,15 +71,15 @@ public class LinearLayout extends ViewGroup {
 
 //  TODO      switch (layoutDirection) {
 //            case HORIZONTAL:
-//                w = 0;
+//                width = 0;
 //                for (int i = 0; i < views.size(); i++) {
-//                    w += views.get(i).w;
+//                    width += views.get(i).width;
 //                }
 //                break;
 //            case VERTICAL:
-//                w = views.get(0).w;
+//                width = views.get(0).width;
 //                for (int i = 1; i < views.size(); i++) {
-//                    w = Math.max(w, views.get(i).w);
+//                    width = Math.max(width, views.get(i).width);
 //                }
 //                break;
 //        }
@@ -99,7 +99,7 @@ public class LinearLayout extends ViewGroup {
 
     @Override
     public boolean drag(float startX, float startY, float dx, float dy) {
-//        rect.set(lastRelX + x, lastRelY + y, w, h);
+//        rect.set(lastRelX + x, lastRelY + y, width, height);
 //        if (rect.contains(x, y)) {
 //            //Todo pan animator
 //        }

@@ -85,6 +85,8 @@ public class ScrollView extends LinearLayout {
             if (cullView(v.getViewBounds()))
                 v.draw(relX + x + scrollX, viewTop - cumulative - scrollY);
         }
+
+
     }
 
     public int getScrollX() {

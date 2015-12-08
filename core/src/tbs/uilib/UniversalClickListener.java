@@ -85,10 +85,11 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        print("fling > " + velocityX + ", " + velocityY);
+        if (shouldFlingVertically || shouldFlingHorizontally)
+            print("fling > " + velocityX + ", " + velocityY);
 
 //        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
-//        final double vectorScreen = Math.sqrt((w * w) + (h * h));
+//        final double vectorScreen = Math.sqrt((width * width) + (height * height));
 //        isTouchDownSinceLastPan = false;
 //        panAnimator.setDuration((vector / vectorScreen) * 250);
 //        panAnimator.start();
@@ -103,6 +104,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         shouldFlingHorizontally = deltaX != 0;
         shouldFlingVertically = deltaY != 0;
+        print("dx > " + deltaX + " , " + "dy > " + deltaY);
         return HUDManager.getHUDManager().drag(tDownX, tDownY, deltaX, deltaY);
     }
 

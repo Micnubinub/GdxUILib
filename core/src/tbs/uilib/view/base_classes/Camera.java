@@ -107,7 +107,7 @@ public class Camera extends OrthographicCamera {
 //        refArea.set(
 //                ogArea.getX(),
 //                ogArea.getY(),
-//                w, h
+//                width, height
 //        );
         refArea.set(
                 ogArea.getX() + (viewportWidth * (1f - scale) / 2),

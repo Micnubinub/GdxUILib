@@ -23,10 +23,8 @@ public abstract class ViewGroup extends View {
     }
 
     public boolean cullView(final Rect bounds) {
-        bounds.set(bounds.x + lastRelX, bounds.y + lastRelX, bounds.w, bounds.h);
         rect2.set(lastRelX + x, lastRelY + y, w, h);
         return rect2.contains(bounds);
-
     }
 
     public void addView(View view) {

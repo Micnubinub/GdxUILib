@@ -35,7 +35,7 @@ public class UILib extends ApplicationAdapter {
 //        img = new Texture("badlogic.jpg");
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
-        Utility.print("w > " + w + " , h > " + h);
+        Utility.print("width > " + w + " , height > " + h);
         x = rand.nextInt(w);
         y = rand.nextInt(h);
         camera = new OrthographicCamera(w, h);
@@ -121,7 +121,7 @@ public class UILib extends ApplicationAdapter {
 
 //        Utility.initSpriteBatch(batch, renderer);
 //        Utility.drawCenteredText(batch, Color.WHITE,
-//                HUDManager.getHUDCamera().isInFrustum(x, y, imgW, imgH) ? "is in frus" : "out of frus", w / 2, h / 2, 0.3f);
+//                HUDManager.getHUDCamera().isInFrustum(x, y, imgW, imgH) ? "is in frus" : "out of frus", width / 2, height / 2, 0.3f);
 //        batch.draw(img, x, y, imgW, imgH);
 
         if (batch.isDrawing())
@@ -145,7 +145,7 @@ public class UILib extends ApplicationAdapter {
         ScissorStack.calculateScissors(camera, batch.getTransformMatrix(), clipBounds, scissors);
         ScissorStack.pushScissors(scissors);
 
-//        batch.draw(img, rand.nextInt(w), rand.nextInt(h), w, h);
+//        batch.draw(img, rand.nextInt(width), rand.nextInt(height), width, height);
         batch.flush();
         ScissorStack.popScissors();
     }
