@@ -4,9 +4,19 @@ package tbs.uilib;
  * Created by Michael on 3/10/2015.
  */
 public class Rect {
-    private static boolean b1, b2;
-    private static Rect rect1;
+    private static final Rect rect1 = new Rect();
+    private static boolean b;
     public float x, y, w, h;
+
+    public Rect() {
+    }
+
+    public Rect(float x, float y, float w, float h) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
 
     public void set(float x, float y, float w, float h) {
         this.x = x;
@@ -24,7 +34,6 @@ public class Rect {
 
     public boolean contains(float x, float y) {
         return (x > this.x && y > this.y) && (x < this.x + w && y < this.y + h);
-//        return (this.x <= x) && (this.y <= y)&&(this.x + w > this.x + x) && (this.y + h > this.y + y) ;
     }
 
     public boolean contains(float x, float y, float w, float h) {
@@ -33,12 +42,7 @@ public class Rect {
     }
 
     public boolean contains(Rect r) {
-        b1 = x < r.x + r.w && x + w > r.x && y < r.y + r.h && y + h > r.y;
-        b2 = contains(r.x, r.y) && contains(r.x + r.w, r.y + r.h)
-                || contains(r.x, r.y + h) && contains(r.x + r.w, r.y);
-
-//        return contains(r.x, r.y, r.w, r.h);
-        return b1 || b2;
+        return (x < r.x + r.w && x + w > r.x && y < r.y + r.h && y + h > r.y);
     }
 
     @Override

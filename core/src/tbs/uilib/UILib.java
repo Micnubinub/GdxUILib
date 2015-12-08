@@ -24,6 +24,7 @@ public class UILib extends ApplicationAdapter {
     SpriteBatch batch;
     ShapeRenderer renderer;
     Rectangle scissors = new Rectangle(), clipBounds;
+    Rect container = new Rect(250, 250, 250, 250), mover = new Rect(0, 0, 75, 75);
     OrthographicCamera camera;
     int w, h, imgW, imgH;
     long ticNano;
@@ -42,6 +43,8 @@ public class UILib extends ApplicationAdapter {
         camera.position.set(w / 2, h / 2, 0);
         imgH = h / 10;
         imgW = w / 7;
+        x = 280;
+        y = 280;
 
         final TextView textView = new TextView("Mike Check 1,2,1,2 please work...Pls, i prayinh here", w / 4);
         textView.setBackground(new Background(0x4444ff, Background.Type.COLOR));
@@ -98,7 +101,6 @@ public class UILib extends ApplicationAdapter {
         linearLayout.addView(button5);
         linearLayout.addView(textView);
 
-
         HUDManager.addView(linearLayout);
     }
 
@@ -131,6 +133,15 @@ public class UILib extends ApplicationAdapter {
             renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.WHITE);
         renderer.rect(0, (h / 2) - 2, w, 4);
+        mover.x = x;
+        mover.y = y;
+
+        renderer.setColor(Color.NAVY);
+        renderer.rect(container.x, container.y, container.w, container.h);
+
+        renderer.setColor(container.contains(mover) ? Color.GREEN : Color.RED);
+        renderer.rect(mover.x, mover.y, mover.w, mover.h);
+
 //        renderer.circle(UniversalClickListener.getInitialTouchDownX(), UniversalClickListener.getInitialTouchDownY(), 29);
         if (renderer.isDrawing())
             renderer.end();

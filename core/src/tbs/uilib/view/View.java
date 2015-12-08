@@ -261,6 +261,14 @@ public abstract class View implements InteractiveObject, Viewable {
             background.drawRelative(relX + x, relY + y, w, h);
     }
 
+    public void setLastRelX(float lastRelX) {
+        this.lastRelX = lastRelX;
+    }
+
+    public void setLastRelY(float lastRelY) {
+        this.lastRelY = lastRelY;
+    }
+
     public interface OnClickListener {
         void onClick(View view, int x, int y);
     }

@@ -121,7 +121,7 @@ public class LinearLayout extends ViewGroup {
 
             cumulative += v.h;
 
-            if (cullView(v.getViewBounds()))
+            if (cullView(v))
                 v.draw(relX + x, viewTop - cumulative);
         }
     }

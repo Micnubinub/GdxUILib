@@ -12,7 +12,6 @@ public class ListView extends ScrollView {
     private OnItemClickListener listener;
     private Adapter adapter;
 
-
     public ListView(Adapter adapter, OnItemClickListener listener) {
         super(true);
         this.listener = listener;
@@ -33,8 +32,6 @@ public class ListView extends ScrollView {
 
     @Override
     public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
-
-
         for (int i = 0; i < adapter.getCount(); i++) {
             final View v = adapter.getView(i);
             rect.set(x, y, w, h);
@@ -61,7 +58,7 @@ public class ListView extends ScrollView {
 
         for (int i = 0; i < adapter.getCount(); i++) {
             final View v = adapter.getView(i);
-            if (cullView(v.getViewBounds()) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
+            if (cullView(v) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
                 v.draw(relX, relY);
             }
         }
