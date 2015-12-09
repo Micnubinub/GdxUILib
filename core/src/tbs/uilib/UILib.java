@@ -15,6 +15,7 @@ import tbs.uilib.view.Button;
 import tbs.uilib.view.ListView;
 import tbs.uilib.view.ScrollView;
 import tbs.uilib.view.TestAdapter;
+import tbs.uilib.view.View;
 
 public class UILib extends ApplicationAdapter {
     public static final Random rand = new Random();
@@ -48,6 +49,15 @@ public class UILib extends ApplicationAdapter {
 
         final ListView linearLayout = new ListView(new TestAdapter(200));
         linearLayout.setSize(w, h);
+        linearLayout.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                String text = String.valueOf(pos);
+                if (v instanceof Button)
+                    text = ((Button) v).getText();
+                Utility.print("clickedItem > " + text);
+            }
+        });
 
         linearLayout.setBackground(new Background(0xffbb00, Background.Type.COLOR));
         HUDManager.addView(linearLayout);
