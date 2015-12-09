@@ -8,7 +8,7 @@ import tbs.uilib.ValueAnimator;
  * Created by Michael on 2/11/2015.
  */
 public class ScrollView extends LinearLayout {
-    protected int scrollX, scrollY, initScrollX, initScrollY;
+    protected int scrollX, scrollY, initScrollX, initScrollY, cumulative;
     protected final ValueAnimator panAnimator = new ValueAnimator(ValueAnimator.Interpolator.DECELERATE, new ValueAnimator.UpdateListener() {
         @Override
         public void update(double animatedValue) {
@@ -28,7 +28,7 @@ public class ScrollView extends LinearLayout {
 
         }
     });
-    protected float flingX, flingY;
+    protected float flingX, flingY, viewTop;
     protected boolean isTouchDownSinceLastPan;
     protected ValueAnimator.UpdateListener flingListener = new ValueAnimator.UpdateListener() {
         @Override
@@ -62,7 +62,7 @@ public class ScrollView extends LinearLayout {
     }
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float parentRight, float parentTop) {
         panAnimator.update();
         lastRelX = relX;
         lastRelY = relY;
@@ -71,8 +71,7 @@ public class ScrollView extends LinearLayout {
 
         drawBackground(relX, relY);
 
-        int cumulative = 0;
-        final float viewTop = relY + y + h;
+        viewTop = relY + y + h;
 
         for (int i = 0; i < views.size(); i++) {
             final View v = views.get(i);
@@ -86,7 +85,7 @@ public class ScrollView extends LinearLayout {
             v.setLastRelY(viewTop - cumulative - scrollY);
 
             if (cullView(v))
-                v.draw(relX + x + scrollX, viewTop - cumulative - scrollY);
+                v.draw(relX + x + scrollX, viewTop - cumulative - scrollY, Math.min(relX + x + scrollX + w, parentRight), Math.min(viewTop - cumulative - scrollY + h, parentTop));
         }
 
 

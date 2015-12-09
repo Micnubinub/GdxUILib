@@ -18,6 +18,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     private static final ArrayList<View> views = new ArrayList<View>();
     public static HUDCamera camera;
     public static boolean continueCheckingClicks, continueCheckingForFling;
+    public static int w, h;
     private static HUDManager hudManager;
     private static Matrix4 proj;
     private static ShapeRenderer shapeRenderer;
@@ -27,7 +28,9 @@ public class HUDManager implements InteractiveObject, Viewable {
     private HUDManager() {
         if (hudManager == null) {
             try {
-                camera = new HUDCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                w = Gdx.graphics.getWidth();
+                h = Gdx.graphics.getHeight();
+                camera = new HUDCamera(w, h);
                 UniversalClickListener.getUniversalClickListener();
                 camera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
                 camera.position.x = camera.viewportWidth / 2;
@@ -115,7 +118,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float parentRight, float parentTop) {
 
     }
 
@@ -148,11 +151,10 @@ public class HUDManager implements InteractiveObject, Viewable {
 
     @Override
     public boolean fling(float vx, float vy) {
-
         continueCheckingForFling = true;
-        for (View view : views) {
+        for (int i = views.size(); i >= 0; i--) {
             if (continueCheckingClicks)
-                if (view.fling(vx, vy))
+                if (views.get(i).fling(vx, vy))
                     return true;
         }
         return false;
@@ -204,8 +206,8 @@ public class HUDManager implements InteractiveObject, Viewable {
             return;
 
 
-        for (int i = 0; i < views.size(); i++) {
-            views.get(i).draw(0, 0);
+        for (int i = views.size(); i >= 0; i--) {
+            views.get(i).draw(0, 0, w, h);
         }
 
         if (renderer.isDrawing())
@@ -251,9 +253,7 @@ public class HUDManager implements InteractiveObject, Viewable {
             if (!continueCheckingForDrag) {
                 return true;
             }
-            final View view = views.get(i);
-//                print("checking for drag on view dy>" + dy);
-            if (view.drag(startX, startY, dx, dy)) {
+            if (views.get(i).drag(startX, startY, dx, dy)) {
                 continueCheckingForDrag = false;
             }
         }
@@ -262,7 +262,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     public void setTouchDown(int x, int y) {
-        for (int i = 0; i < views.size(); i++) {
+        for (int i = views.size(); i >= 0; i--) {
             final View view = views.get(i);
 
             if (view.getState() != State.DISABLED && view.checkCollision(UniversalClickListener.TouchType.TOUCH_DOWN, x, y)) {

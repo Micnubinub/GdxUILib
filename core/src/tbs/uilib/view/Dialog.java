@@ -50,7 +50,8 @@ public class Dialog extends View {
     }
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float relW, float relH) {
+
         lastRelX = relX;
         lastRelY = relY;
         if (!showDialog)
@@ -60,7 +61,7 @@ public class Dialog extends View {
             drawBackground(relX, relY);
 
         if (view != null) {
-            view.draw(x, y);
+            view.draw(relX + x, relY + y, Math.min(w, relW), Math.min(h, relH));
         }
     }
 

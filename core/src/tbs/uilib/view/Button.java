@@ -30,9 +30,9 @@ public class Button extends View {
     }
 
 
-
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float relW, float relH) {
+
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
             return;
         lastRelX = relX;

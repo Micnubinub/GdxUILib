@@ -141,13 +141,14 @@ public class TextView extends View {
     }
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float parentRight, float parentTop) {
+
         lastRelX = relX;
         lastRelY = relY;
         if (!HUDManager.camera.isInFrustum(relX + x, relY + y, w, h))
             return;
 
-        drawBackground(relX,relY);
+        drawBackground(relX, relY);
         final SpriteBatch batch = getSpriteBatch(relX, relY);
         for (Drawable drawable : drawables) {
             if (w > 0 && h > 0) {

@@ -1,9 +1,6 @@
 package tbs.uilib;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import tbs.uilib.view.base_classes.Camera;
 
 /**
  * Created by Michael on 1/28/2015.
@@ -44,7 +41,7 @@ public class Drawable extends GameObject implements Viewable {
     }
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float parentRight, float parentTop) {
 
     }
 

@@ -46,7 +46,7 @@ public class ListView extends ScrollView {
     }
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float parentRight, float parentTop) {
         lastRelX = relX;
         lastRelY = relY;
         if (!HUDManager.camera.isInFrustum(x, y, w, h))
@@ -56,11 +56,19 @@ public class ListView extends ScrollView {
         if (adapter == null || adapter.getCount() < 1)
             return;
 
-        for (int i = 0; i < adapter.getCount(); i++) {
-            final View v = adapter.getView(i);
-            if (cullView(v) && HUDManager.camera.isInFrustum(v.x, v.y, v.w, v.h)) {
-                v.draw(relX, relY);
-            }
+        for (int i = 0; i < views.size(); i++) {
+            final View v = views.get(i);
+            if (resizeChildrenWhenParentResized)
+                v.w = v.w > w ? w : v.w;
+
+            cumulative += v.h;
+//            v.x += scrollX;
+//            v.y -= scrollY;
+            v.setLastRelX(relX + x + scrollX);
+            v.setLastRelY(viewTop - cumulative - scrollY);
+
+            if (cullView(v))
+                v.draw(relX + x + scrollX, viewTop - cumulative - scrollY, Math.min(relX + x + scrollX + w, parentRight), Math.min(viewTop - cumulative - scrollY + h, parentTop));
         }
     }
 

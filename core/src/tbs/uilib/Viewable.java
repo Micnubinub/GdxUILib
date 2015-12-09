@@ -12,7 +12,7 @@ public interface Viewable {
 
     int getID();
 
-    void draw(final float relX, final float relY);
+    void draw(final float relX, final float relY, final float parentRight, final float parentTop);
 
     void dispose();
 }

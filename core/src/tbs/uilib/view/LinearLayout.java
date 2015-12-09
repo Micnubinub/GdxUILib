@@ -99,7 +99,8 @@ public class LinearLayout extends ViewGroup {
 
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float parentRight, float parentTop) {
+
         lastRelX = relX;
         lastRelY = relY;
         drawBackground(relX, relY);
@@ -116,7 +117,7 @@ public class LinearLayout extends ViewGroup {
             v.setLastRelY(viewTop - cumulative);
 
             if (cullView(v))
-                v.draw(relX + x, viewTop - cumulative);
+                v.draw(relX + x, viewTop - cumulative, Math.min(relX + w, parentRight), Math.min(relY + h, parentTop));
         }
     }
 

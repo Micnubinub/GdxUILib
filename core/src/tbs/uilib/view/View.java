@@ -77,8 +77,6 @@ public abstract class View implements InteractiveObject, Viewable {
 
     @Override
     public boolean fling(float vx, float vy) {
-        print("fling view > " + vx + ", " + vy);
-
         return false;
     }
 

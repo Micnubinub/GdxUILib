@@ -54,7 +54,8 @@ public class ProgressBar extends View {
     }
 
     @Override
-    public void draw(float relX, float relY) {
+    public void draw(float relX, float relY, float parentRight, float parentTop) {
+
         lastRelX = relX;
         lastRelY = relY;
 
