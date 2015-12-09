@@ -12,7 +12,6 @@ import tbs.uilib.Values;
  * Created by Michael on 3/8/2015.
  */
 public class Dialog extends View {
-    public static boolean dimBackground = true;
     protected static View view;
     private static DialogListener listener;
     private static Texture dimmer;
@@ -51,17 +50,17 @@ public class Dialog extends View {
 
     @Override
     public void draw(float relX, float relY, float relW, float relH) {
+        if (!showDialog) {
+            lastRelX = relX;
+            lastRelY = relY;
+        } else {
+            //Todo make sure its drawn in the center, with padding(add to the values you are meant to create in utility >utility.dialog_padding = 1...
 
-        lastRelX = relX;
-        lastRelY = relY;
-        if (!showDialog)
-            return;
-        //Todo make sure its drawn in the center, with padding(add to the values you are meant to create in utility >utility.dialog_padding = 1...
-        if (dimBackground)
             drawBackground(relX, relY);
 
-        if (view != null) {
-            view.draw(relX + x, relY + y, Math.min(w, relW), Math.min(h, relH));
+            if (view != null) {
+                view.draw(relX + x, relY + y, Math.min(w, relW), Math.min(h, relH));
+            }
         }
     }
 
@@ -75,13 +74,13 @@ public class Dialog extends View {
     }
 
     @Override
-    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+    public boolean click(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         rect.set(x, y, w, h);
         if (!rect.contains(xPos, yPos)) {
             dismiss();
             return false;
         }
-        return view.checkCollision(touchType, xPos, yPos);
+        return view.click(touchType, xPos, yPos);
     }
 
 

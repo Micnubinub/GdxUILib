@@ -20,13 +20,13 @@ public class LinearLayout extends ViewGroup {
         //Todo        switch (layoutDirection) {
 //            case VERTICAL:
 //                height = 0;
-//                for (int i = 0; i < views.size(); i++) {
+//                for (int i = 0; i < views.size()-1; i++) {
 //                    height += views.get(i).height;
 //                }
 //                break;
 //            case HORIZONTAL:
 //                height = views.get(0).height;
-//                for (int i = 1; i < views.size(); i++) {
+//                for (int i = 1; i < views.size()-1; i++) {
 //                    height = Math.max(height, views.get(i).height);
 //                }
 //                break;
@@ -43,8 +43,8 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override
-    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
-        return super.checkCollision(touchType, xPos, yPos);
+    public boolean click(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+        return super.click(touchType, xPos, yPos);
     }
 
     public void removeView(View view) {
@@ -63,13 +63,13 @@ public class LinearLayout extends ViewGroup {
 //  TODO      switch (layoutDirection) {
 //            case HORIZONTAL:
 //                width = 0;
-//                for (int i = 0; i < views.size(); i++) {
+//                for (int i = 0; i < views.size()-1; i++) {
 //                    width += views.get(i).width;
 //                }
 //                break;
 //            case VERTICAL:
 //                width = views.get(0).width;
-//                for (int i = 1; i < views.size(); i++) {
+//                for (int i = 1; i < views.size()-1; i++) {
 //                    width = Math.max(width, views.get(i).width);
 //                }
 //                break;
@@ -82,7 +82,7 @@ public class LinearLayout extends ViewGroup {
         this.w = w;
 
         if (resizeChildrenWhenParentResized)
-            for (int i = 0; i < views.size(); i++) {
+            for (int i = views.size() - 1; i >= 0; i--) {
                 final View v = views.get(i);
                 v.w = v.w > w ? w : v.w;
             }

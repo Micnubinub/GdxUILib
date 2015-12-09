@@ -8,7 +8,7 @@ import tbs.uilib.ValueAnimator;
  * Created by Michael on 2/11/2015.
  */
 public class ScrollView extends LinearLayout {
-    protected int scrollX, scrollY, initScrollX, initScrollY, cumulative;
+    protected int scrollX, scrollY, initScrollX, initScrollY, lastMeasuredHeight, lastMeasuredWidth;
     protected final ValueAnimator panAnimator = new ValueAnimator(ValueAnimator.Interpolator.DECELERATE, new ValueAnimator.UpdateListener() {
         @Override
         public void update(double animatedValue) {
@@ -28,12 +28,14 @@ public class ScrollView extends LinearLayout {
 
         }
     });
-    protected float flingX, flingY, viewTop;
-    protected boolean isTouchDownSinceLastPan;
+    protected boolean canScrollX, canScrollY;
+    protected float flingX, flingY;
     protected ValueAnimator.UpdateListener flingListener = new ValueAnimator.UpdateListener() {
         @Override
         public void update(double animatedValue) {
-            if (!isTouchDownSinceLastPan) {
+            if (UniversalClickListener.isTouchDownSinceLastPan) {
+                panAnimator.stop();
+            } else {
                 //Todo
                 setScrollX(Math.round((float) (initScrollX + (animatedValue * flingX))));
                 setScrollY(Math.round((float) (initScrollY + (animatedValue * flingY))));
@@ -52,8 +54,25 @@ public class ScrollView extends LinearLayout {
         }
     };
 
+
+    public ScrollView(boolean resizeChildrenWhenParentResized, boolean canScrollX, boolean canScrollY) {
+        super(resizeChildrenWhenParentResized);
+        this.canScrollX = canScrollX;
+        this.canScrollY = canScrollY;
+    }
+
     public ScrollView(boolean resizeChildrenWhenParentResized) {
         super(resizeChildrenWhenParentResized);
+        this.canScrollX = false;
+        this.canScrollY = true;
+    }
+
+    public void setCanScrollX(boolean canScrollX) {
+        this.canScrollX = canScrollX;
+    }
+
+    public void setCanScrollY(boolean canScrollY) {
+        this.canScrollY = canScrollY;
     }
 
     @Override
@@ -63,15 +82,12 @@ public class ScrollView extends LinearLayout {
 
     @Override
     public void draw(float relX, float relY, float parentRight, float parentTop) {
-        panAnimator.update();
-        lastRelX = relX;
-        lastRelY = relY;
-        if (!HUDManager.camera.isInFrustum(x, y, w, h))
-            return;
-
+        updatePanAnimator();
         drawBackground(relX, relY);
 
-        viewTop = relY + y + h;
+        final float viewTop = relY + y + h;
+
+        int cumulative = 0;
 
         for (int i = 0; i < views.size(); i++) {
             final View v = views.get(i);
@@ -79,16 +95,15 @@ public class ScrollView extends LinearLayout {
                 v.w = v.w > w ? w : v.w;
 
             cumulative += v.h;
+            lastMeasuredWidth = (int) Math.max(v.w, lastMeasuredWidth);
 //            v.x += scrollX;
 //            v.y -= scrollY;
             v.setLastRelX(relX + x + scrollX);
             v.setLastRelY(viewTop - cumulative - scrollY);
-
             if (cullView(v))
                 v.draw(relX + x + scrollX, viewTop - cumulative - scrollY, Math.min(relX + x + scrollX + w, parentRight), Math.min(viewTop - cumulative - scrollY + h, parentTop));
         }
-
-
+        lastMeasuredHeight = cumulative;
     }
 
     public int getScrollX() {
@@ -96,7 +111,8 @@ public class ScrollView extends LinearLayout {
     }
 
     public void setScrollX(int scrollX) {
-        this.scrollX = scrollX;
+        if (canScrollX)
+            this.scrollX = scrollX;
     }
 
     public int getScrollY() {
@@ -104,17 +120,29 @@ public class ScrollView extends LinearLayout {
     }
 
     public void setScrollY(int scrollY) {
-        print("setCrollY>" + scrollY);
-        this.scrollY = scrollY;
+        if (canScrollY) {
+            scrollY = scrollY > lastMeasuredHeight ? lastMeasuredHeight : scrollY;
+            print("setScrollY > " + scrollY + " lastMH > " + lastMeasuredHeight + " h > " + h);
+//            scrollY = (int) (scrollY > lastMeasuredHeight - h ? lastMeasuredHeight - h : scrollY);
+            this.scrollY = scrollY;
+        }
+    }
+
+    public void updatePanAnimator() {
+        if (panAnimator.isRunning()) {
+            if (UniversalClickListener.isTouchDownSinceLastPan)
+                panAnimator.stop();
+            else
+                panAnimator.update();
+        }
     }
 
     @Override
     public boolean drag(float startX, float startY, float dx, float dy) {
         rect.set(lastRelX + x, lastRelY + y, w, h);
         if (rect.contains(startX, startY)) {
-            //Todo pan animator
-            scrollX += dx;
-            scrollY += dy;
+            setScrollX(scrollX + (int) dx);
+            setScrollY(scrollY + (int) dy);
             return true;
         }
         return false;
@@ -132,11 +160,13 @@ public class ScrollView extends LinearLayout {
             print("vector > " + vector);
             final double vectorScreen = Math.sqrt((w * w) + (h * h));
             panAnimator.setDuration((vector / vectorScreen) * 250);
-            if (panAnimator.duration > 65) {
+            if (panAnimator.duration > 20) {
                 panAnimator.setUpdateListener(flingListener);
                 panAnimator.start();
-                flingX = vx / 6;
-                flingY = vy / 6;
+                flingX = vx / (555555555 / (vx * vx));
+                flingY = vy / (555555555 / (vy * vy));
+                print("FX > " + flingX);
+                print("FY > " + flingY);
             }
             initScrollX = scrollX;
             initScrollY = scrollY;

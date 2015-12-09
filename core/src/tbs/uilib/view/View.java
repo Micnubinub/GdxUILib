@@ -16,7 +16,6 @@ import tbs.uilib.State;
 import tbs.uilib.UniversalClickListener;
 import tbs.uilib.Viewable;
 
-
 /**
  * Created by Michael on 2/9/2015.
  */
@@ -29,6 +28,7 @@ public abstract class View implements InteractiveObject, Viewable {
     public ArrayList<Drawable> drawables = new ArrayList<Drawable>();
     public OnClickListener onClickListener;
     public OnTouchListener onTouchListener;
+    public OnLongClickListener onLongClickListener;
     public Object tag;
     public Background background;
     //Todo tmp
@@ -119,15 +119,19 @@ public abstract class View implements InteractiveObject, Viewable {
         return batch;
     }
 
+    public void setOnLongClickListener(OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
+    }
+
     @Override
-    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+    public boolean click(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         //Todo
         if (state == State.DISABLED || ((touchType != UniversalClickListener.TouchType.CLICK) && (onTouchListener == null)))
             return false;
         rect.set(lastRelX + x, lastRelY + y, w, h);
         final boolean clicked = rect.contains(xPos, yPos);
 
-        if (clicked && !(state == State.DISABLED)) {
+        if (clicked) {
             switch (touchType) {
                 case TOUCH_DOWN:
                     setTouchDown(true);
@@ -157,10 +161,15 @@ public abstract class View implements InteractiveObject, Viewable {
     }
 
     @Override
-    public boolean checkCollision(int xPos, int yPos, int width, int height) {
-        rect.set(x, y, w, h);
-        rect2.set(xPos, yPos, width, height);
-        return rect.contains(rect2);
+    public boolean longClick(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+        if (state == State.DISABLED || ((touchType != UniversalClickListener.TouchType.LONG_CLICK) && (onTouchListener == null)))
+            return false;
+        rect.set(lastRelX + x, lastRelY + y, w, h);
+        final boolean clicked = rect.contains(xPos, yPos);
+        if (onLongClickListener != null)
+            onLongClickListener.onLongClick(this, xPos, yPos);
+
+        return clicked;
     }
 
     public State getState() {
@@ -261,23 +270,33 @@ public abstract class View implements InteractiveObject, Viewable {
     }
 
     public void drawBackground(final float relX, final float relY) {
+        lastRelX = relX;
+        lastRelY = relY;
+
         if (background != null)
             background.drawRelative(relX + x, relY + y, w, h);
     }
 
     public void setLastRelX(float lastRelX) {
         this.lastRelX = lastRelX;
-//        print("debugDraw > "+ debugDraw + " | setLRX > "+lastRelX);
     }
 
     public void setLastRelY(float lastRelY) {
         this.lastRelY = lastRelY;
-//        print("debugDraw > "+ debugDraw + " | setLRY > "+lastRelY);
+    }
 
+    @Override
+    public String toString() {
+        rect.set(lastRelX + x, y + lastRelY, w, h);
+        return rect.toString();
     }
 
     public interface OnClickListener {
         void onClick(View view, int x, int y);
+    }
+
+    public interface OnLongClickListener {
+        void onLongClick(View view, int x, int y);
     }
 
     public interface OnTouchListener {

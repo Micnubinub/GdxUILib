@@ -3,8 +3,6 @@ package tbs.uilib.view;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import tbs.uilib.Drawable;
-import tbs.uilib.HUDManager;
 import tbs.uilib.Utility;
 
 
@@ -142,17 +140,11 @@ public class TextView extends View {
 
     @Override
     public void draw(float relX, float relY, float parentRight, float parentTop) {
-
-        lastRelX = relX;
-        lastRelY = relY;
-        if (!HUDManager.camera.isInFrustum(relX + x, relY + y, w, h))
-            return;
-
         drawBackground(relX, relY);
         final SpriteBatch batch = getSpriteBatch(relX, relY);
-        for (Drawable drawable : drawables) {
+        for (int i = 0; i < drawables.size() - 1; i++) {
             if (w > 0 && h > 0) {
-                batch.draw(drawable.sprite, relX, relY);
+                batch.draw(drawables.get(i).sprite, relX, relY);
             }
         }
 

@@ -5,13 +5,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
-import tbs.uilib.Drawable;
-import tbs.uilib.HUDManager;
 import tbs.uilib.Utility;
 
 public class Button extends View {
     private String text;
     private Color textColor = Color.WHITE;
+
+    public Button() {
+    }
 
     public Button(String text) {
         this.text = text;
@@ -32,22 +33,15 @@ public class Button extends View {
 
     @Override
     public void draw(float relX, float relY, float relW, float relH) {
-
-        if (!HUDManager.camera.isInFrustum(x, y, w, h))
-            return;
-        lastRelX = relX;
-        lastRelY = relY;
         drawBackground(relX, relY);
-
         final SpriteBatch batch = getSpriteBatch(relX, relY);
-        for (Drawable drawable : drawables) {
+        for (int i = drawables.size() - 1; i >= 0; i--) {
             if (w > 0 && h > 0) {
-                batch.draw(drawable.sprite, x, y, w, h);
+                batch.draw(drawables.get(i).sprite, x, y, w, h);
             }
         }
 
         Utility.drawCenteredText(batch, text, textColor, 0.5f, relX + x + (w / 2), relY + y + (h / 2));
-
     }
 
     public void flushRenderer(Batch shapeRendererOrSpriteBatch) {
@@ -68,7 +62,7 @@ public class Button extends View {
 
     @Override
     public Object getTag() {
-        return null;
+        return tag;
     }
 
     @Override

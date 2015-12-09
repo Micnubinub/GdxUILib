@@ -16,8 +16,8 @@ import tbs.uilib.view.View;
  */
 public class HUDManager implements InteractiveObject, Viewable {
     private static final ArrayList<View> views = new ArrayList<View>();
-    public static HUDCamera camera;
-    public static boolean continueCheckingClicks, continueCheckingForFling;
+    public static OrthographicCamera camera;
+    public static boolean continueCheckingClicks, continueCheckingForFling, continueChceckingForLongClicks;
     public static int w, h;
     private static HUDManager hudManager;
     private static Matrix4 proj;
@@ -30,7 +30,7 @@ public class HUDManager implements InteractiveObject, Viewable {
             try {
                 w = Gdx.graphics.getWidth();
                 h = Gdx.graphics.getHeight();
-                camera = new HUDCamera(w, h);
+                camera = new OrthographicCamera(w, h);
                 UniversalClickListener.getUniversalClickListener();
                 camera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
                 camera.position.x = camera.viewportWidth / 2;
@@ -76,7 +76,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     public static void removeViewByID(int iD) {
-        for (int i = 0; i < views.size(); i++) {
+        for (int i = 0; i < views.size() - 1; i++) {
             final View v = views.get(i);
             if (v.getID() == iD)
                 views.remove(v);
@@ -84,7 +84,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     public static void removeViewByTag(Object tag) {
-        for (int i = 0; i < views.size(); i++) {
+        for (int i = 0; i < views.size() - 1; i++) {
             final View v = views.get(i);
             if (tag.equals(v.getTag()))
                 views.remove(v);
@@ -123,7 +123,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     @Override
-    public boolean checkCollision(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+    public boolean click(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
         continueCheckingClicks = true;
         switch (touchType) {
             case CLICK:
@@ -132,9 +132,8 @@ public class HUDManager implements InteractiveObject, Viewable {
                         return true;
                     }
                     final View view = views.get(i);
-                    if (view.checkCollision(touchType, xPos, yPos)) {
+                    if (view.click(touchType, xPos, yPos)) {
                         continueCheckingClicks = false;
-                        //Todo UniversalClickListener.handleClick(x,y,);
                     }
                 }
                 break;
@@ -148,11 +147,25 @@ public class HUDManager implements InteractiveObject, Viewable {
         return false;
     }
 
+    @Override
+    public boolean longClick(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
+        continueChceckingForLongClicks = true;
+        for (int i = (views.size() - 1); i >= 0; i--) {
+            if (!continueChceckingForLongClicks) {
+                return true;
+            }
+            final View view = views.get(i);
+            if (view.longClick(touchType, xPos, yPos)) {
+                continueChceckingForLongClicks = false;
+            }
+        }
+        return false;
+    }
 
     @Override
     public boolean fling(float vx, float vy) {
         continueCheckingForFling = true;
-        for (int i = views.size(); i >= 0; i--) {
+        for (int i = views.size() - 1; i >= 0; i--) {
             if (continueCheckingClicks)
                 if (views.get(i).fling(vx, vy))
                     return true;
@@ -160,11 +173,6 @@ public class HUDManager implements InteractiveObject, Viewable {
         return false;
     }
 
-
-    @Override
-    public boolean checkCollision(int xPos, int yPos, int width, int height) {
-        return false;
-    }
 
     @Override
     public void setState(State state) {
@@ -206,7 +214,7 @@ public class HUDManager implements InteractiveObject, Viewable {
             return;
 
 
-        for (int i = views.size(); i >= 0; i--) {
+        for (int i = views.size() - 1; i >= 0; i--) {
             views.get(i).draw(0, 0, w, h);
         }
 
@@ -262,10 +270,10 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     public void setTouchDown(int x, int y) {
-        for (int i = views.size(); i >= 0; i--) {
+        for (int i = views.size() - 1; i >= 0; i--) {
             final View view = views.get(i);
 
-            if (view.getState() != State.DISABLED && view.checkCollision(UniversalClickListener.TouchType.TOUCH_DOWN, x, y)) {
+            if (view.getState() != State.DISABLED && view.click(UniversalClickListener.TouchType.TOUCH_DOWN, x, y)) {
                 view.setState(State.TOUCH_DOWN);
                 return;
             }
@@ -273,7 +281,7 @@ public class HUDManager implements InteractiveObject, Viewable {
     }
 
     public void setTouchUp() {
-        for (int i = 0; i < views.size(); i++) {
+        for (int i = 0; i < views.size() - 1; i++) {
             final View view = views.get(i);
 
             if (view.getState() != State.DISABLED) {
@@ -282,24 +290,4 @@ public class HUDManager implements InteractiveObject, Viewable {
         }
     }
 
-
-    public static class HUDCamera extends OrthographicCamera {
-        private static final Rect r1 = new Rect(), r2 = new Rect();
-
-        public HUDCamera(int viewportWidth, int viewportHeight) {
-            super(viewportWidth, viewportHeight);
-        }
-
-        public boolean isInFrustum(Rect rect) {
-            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
-            return r1.contains(rect);
-        }
-
-        public boolean isInFrustum(float x, float y, float w, float h) {
-//            r1.set(camera.position.x, camera.position.y, viewportWidth, viewportHeight);
-//            r2.set(camera.position.x + x, camera.position.y + y, width, height);
-//            return r1.contains(r2);
-            return true;
-        }
-    }
 }

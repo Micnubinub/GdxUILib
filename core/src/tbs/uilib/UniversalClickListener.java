@@ -38,7 +38,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     public static void click(TouchType touchType, int x, int y) {
         y = Gdx.graphics.getHeight() - y;
-        HUDManager.getHUDManager().checkCollision(touchType, x, y);
+        HUDManager.getHUDManager().click(touchType, x, y);
     }
 
     public static void confirmClick() {
@@ -78,15 +78,14 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
 
     @Override
     public boolean longPress(float x, float y) {
-        //TODO implement longPress
-        print("longPress");
-        return false;
+        //TODO implement longPres
+        // s
+        return HUDManager.getHUDManager().longClick(TouchType.LONG_CLICK, (int) x, (int) y);
     }
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        if (shouldFlingVertically || shouldFlingHorizontally)
-            print("fling > " + velocityX + ", " + velocityY);
+        isTouchDownSinceLastPan = false;
 
 //        final double vector = Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
 //        final double vectorScreen = Math.sqrt((width * width) + (height * height));
@@ -160,6 +159,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         tDownX = screenX;
         tDownY = h - screenY;
+        isTouchDownSinceLastPan = true;
         return false;
     }
 
@@ -199,7 +199,7 @@ public class UniversalClickListener implements InputProcessor, GestureDetector.G
     }
 
     public enum TouchType {
-        CLICK, TOUCH_DOWN, TOUCH_UP, FLING, PAN
+        CLICK, LONG_CLICK, TOUCH_DOWN, TOUCH_UP, FLING, PAN
     }
 
     public interface OnClickListener {
