@@ -104,21 +104,42 @@ public class LinearLayout extends ViewGroup {
         lastRelX = relX;
         lastRelY = relY;
         drawBackground(relX, relY);
-
         int cumulative = 0;
-        final float viewTop = relY + y + h;
-        for (int i = 0; i < views.size(); i++) {
-            final View v = views.get(i);
-            if (resizeChildrenWhenParentResized)
-                v.w = v.w > w ? w : v.w;
 
-            cumulative += v.h;
-            v.setLastRelX(relX + x);
-            v.setLastRelY(viewTop - cumulative);
+        switch (layoutDirection) {
+            case VERTICAL_LAYOUT:
+                final float viewTop = relY + y + h;
+                for (int i = 0; i < views.size(); i++) {
+                    final View v = views.get(i);
+                    if (resizeChildrenWhenParentResized)
+                        v.w = v.w > w ? w : v.w;
 
-            if (cullView(v))
-                v.draw(relX + x, viewTop - cumulative, Math.min(relX + w, parentRight), Math.min(relY + h, parentTop));
+                    cumulative += v.h;
+                    v.setLastRelX(relX + x);
+                    v.setLastRelY(viewTop - cumulative);
+
+                    if (cullView(v))
+                        v.draw(relX + x, viewTop - cumulative, Math.min(relX + w, parentRight), Math.min(relY + h, parentTop));
+                }
+                break;
+            case HORIZONTAL_LAYOUT:
+                final float viewLeft = relX + x;
+                for (int i = 0; i < views.size(); i++) {
+                    final View v = views.get(i);
+                    if (resizeChildrenWhenParentResized)
+                        v.h = v.h > h ? h : v.h;
+
+                    cumulative += v.w;
+                    v.setLastRelX(viewLeft + cumulative);
+                    v.setLastRelY(relY);
+
+                    if (cullView(v))
+                        v.draw(viewLeft + cumulative, relY + y, Math.min(relX + w, parentRight), Math.min(relY + h, parentTop));
+                }
+                break;
         }
+
+
     }
 
     public void setLayoutDirection(int layoutDirection) {

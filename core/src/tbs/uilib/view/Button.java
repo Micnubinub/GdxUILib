@@ -30,18 +30,20 @@ public class Button extends View {
         this.textColor = textColor;
     }
 
-
     @Override
     public void draw(float relX, float relY, float relW, float relH) {
+        tic = System.nanoTime();
         drawBackground(relX, relY);
         final SpriteBatch batch = getSpriteBatch(relX, relY);
-        for (int i = drawables.size() - 1; i >= 0; i--) {
-            if (w > 0 && h > 0) {
-                batch.draw(drawables.get(i).sprite, x, y, w, h);
-            }
-        }
+//        for (int i = drawables.size() - 1; i >= 0; i--) {
+//            if (w > 0 && h > 0) {
+//                batch.draw(drawables.get(i).sprite, x, y, w, h);
+//            }
+//        }
 
         Utility.drawCenteredText(batch, text, textColor, 0.5f, relX + x + (w / 2), relY + y + (h / 2));
+        print("button tic toc > " + (System.nanoTime() - tic));
+
     }
 
     public void flushRenderer(Batch shapeRendererOrSpriteBatch) {

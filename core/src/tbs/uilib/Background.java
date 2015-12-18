@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /**
  * Created by linde on 18-Oct-15.
@@ -105,6 +104,7 @@ public class Background {
 
         switch (type) {
             case COLOR:
+
                 final ShapeRenderer renderer = Utility.initShapeRenderer(HUDManager.getSpriteBatch(), HUDManager.getShapeRenderer(), scissors, clipBounds);
                 color.set(tmpC);
                 renderer.setColor(color);

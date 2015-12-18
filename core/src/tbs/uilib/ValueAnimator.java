@@ -88,9 +88,7 @@ public class ValueAnimator {
                 animated_value = (float) ((-0.643f * Math.pow(x, 3)) + (-0.3357f * Math.pow(x, 2)) + (0.02143f * x) + 1);
                 break;
             case OVER_SHOOT:
-
                 break;
-
             case LINEAR:
                 animated_value = 1 - x;
                 break;
@@ -102,7 +100,6 @@ public class ValueAnimator {
                                 (18.83 * Math.pow(x, 2)) +
                                 (1.806 * x)
                 );
-
                 break;
         }
 

@@ -12,8 +12,15 @@ public abstract class ViewPager extends ViewGroup {
     public int currentPage;
     protected float pageScrollOffSetX, pageScrollOffSetY;
     private PageScrollListener pageScrollListener;
+    private TextView title;
+    private TabStrip tabStrip;
     //Todo ensure all pages are the same size as the parent
     //Todo make adapter for both the pages and the titles* optional
+
+    public ViewPager() {
+        title = new TextView((int) w);
+        tabStrip = new TabStrip();
+    }
 
     @Override
     public boolean longClick(UniversalClickListener.TouchType touchType, int xPos, int yPos) {
@@ -86,5 +93,43 @@ public abstract class ViewPager extends ViewGroup {
         void onPageScrolled(int currentPage, float pageScrollOffSet);
 
         void onPageSelected(int selectedPage);
+    }
+
+    public static class TabStrip extends ScrollView {
+        public static final TextView titleTemplate = new TextView(33);
+        public ArrayList<String> titles;
+        private int selectedItemTextColor, selectedItemBackgroundColor, itemTextColor, itemBackgroundColor;
+
+        public TabStrip() {
+            super(true, true, false);
+        }
+
+        public void setSelectedItemBackgroundColor(int selectedItemBackgroundColor) {
+            this.selectedItemBackgroundColor = selectedItemBackgroundColor;
+        }
+
+        public void setSelectedItemTextColor(int selectedItemTextColor) {
+            this.selectedItemTextColor = selectedItemTextColor;
+        }
+
+        public void setItemBackgroundColor(int itemBackgroundColor) {
+            this.itemBackgroundColor = itemBackgroundColor;
+        }
+
+        public void setItemTextColor(int itemTextColor) {
+            this.itemTextColor = itemTextColor;
+        }
+
+        public void setTitles(ArrayList<String> titles) {
+            this.titles = titles;
+        }
+
+        @Override
+        public void draw(float relX, float relY, float parentRight, float parentTop) {
+            //Todo draw title
+            //Todo draw tabs
+            //Todo draw pages
+
+        }
     }
 }

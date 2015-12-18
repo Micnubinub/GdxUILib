@@ -33,23 +33,21 @@ public abstract class View implements InteractiveObject, Viewable {
     public Background background;
     //Todo tmp
     public boolean debugDraw;
+    public long tic;
     protected float lastRelX, lastRelY;
     protected int id;
 
     public final ShapeRenderer initShapeRenderer(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
-        if (batch.isDrawing())
+        if (batch.isDrawing()) {
             try {
-                try {
-                    batch.end();
-                } catch (Exception e) {
-                }
-                try {
-                    ScissorStack.popScissors();
-                } catch (Exception e) {
-                }
+                batch.end();
             } catch (Exception e) {
-                e.printStackTrace();
             }
+            try {
+                ScissorStack.popScissors();
+            } catch (Exception e) {
+            }
+        }
 
         if (!renderer.isDrawing()) {
             try {
@@ -81,19 +79,16 @@ public abstract class View implements InteractiveObject, Viewable {
     }
 
     public final SpriteBatch initSpriteBatch(SpriteBatch batch, ShapeRenderer renderer, float relX, float relY) {
-        if (renderer.isDrawing())
+        if (renderer.isDrawing()) {
             try {
-                try {
-                    renderer.end();
-                } catch (Exception e) {
-                }
-                try {
-                    ScissorStack.popScissors();
-                } catch (Exception e) {
-                }
+                renderer.end();
             } catch (Exception e) {
-                e.printStackTrace();
             }
+            try {
+                ScissorStack.popScissors();
+            } catch (Exception e) {
+            }
+        }
 
         if (!batch.isDrawing()) {
             try {

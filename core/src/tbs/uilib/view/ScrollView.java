@@ -82,6 +82,7 @@ public class ScrollView extends LinearLayout {
 
     @Override
     public void draw(float relX, float relY, float parentRight, float parentTop) {
+        tic = System.nanoTime();
         updatePanAnimator();
         drawBackground(relX, relY);
 
@@ -104,6 +105,7 @@ public class ScrollView extends LinearLayout {
                 v.draw(relX + x + scrollX, viewTop - cumulative - scrollY, Math.min(relX + x + scrollX + w, parentRight), Math.min(viewTop - cumulative - scrollY + h, parentTop));
         }
         lastMeasuredHeight = cumulative;
+        print("scrollView tic toc > " + (System.nanoTime() - tic));
     }
 
     public int getScrollX() {
@@ -122,7 +124,7 @@ public class ScrollView extends LinearLayout {
     public void setScrollY(int scrollY) {
         if (canScrollY) {
             scrollY = scrollY > lastMeasuredHeight ? lastMeasuredHeight : scrollY;
-            print("setScrollY > " + scrollY + " lastMH > " + lastMeasuredHeight + " h > " + h);
+//            print("setScrollY > " + scrollY + " lastMH > " + lastMeasuredHeight + " h > " + h);
 //            scrollY = (int) (scrollY > lastMeasuredHeight - h ? lastMeasuredHeight - h : scrollY);
             this.scrollY = scrollY;
         }
@@ -163,8 +165,9 @@ public class ScrollView extends LinearLayout {
             if (panAnimator.duration > 20) {
                 panAnimator.setUpdateListener(flingListener);
                 panAnimator.start();
-                flingX = vx / (555555555 / (vx * vx));
-                flingY = vy / (555555555 / (vy * vy));
+                flingX = (int) (vx * Math.pow(1.000075, Math.abs((int) vx)));
+                flingY = (int) (vy * Math.pow(1.000075, Math.abs((int) vy)));
+
                 print("FX > " + flingX);
                 print("FY > " + flingY);
             }
